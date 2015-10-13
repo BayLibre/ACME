@@ -1,0 +1,35 @@
+#!/bin/sh
+
+# Load the GPIO expander driver, enable appropriate
+# GPIOs for each probe and finally load ina2xx and tmp401
+# drivers to detect the probe sensors.
+
+if [ "$1" == "start" ]
+then
+	PRB_EN_GPIOS="484 496 500 480 476 504 508 472"
+	GPIO_BASE_PATH="/sys/class/gpio/"
+
+	modprobe gpio-pca953x
+
+	for GPIO in $PRB_EN_GPIOS
+	do
+		echo $GPIO > $GPIO_BASE_PATH/export
+		GPIO_PATH=$GPIO_BASE_PATH/gpio$GPIO/
+		echo out > $GPIO_PATH/direction
+		echo 1 > $GPIO_PATH/value
+	done
+
+	rmmod ina2xx
+	rmmod tmp401
+
+	modprobe ina2xx
+	modprobe tmp401
+
+	export DISPLAY=:1
+	Xvfb :1 -screen 0 1600x900x16 &
+	fluxbox 2> /dev/null &
+	x11vnc -display :1  -nopw -listen localhost -xkb &
+	X -mouse evdev,,/dev/input/event0 &
+	DISPLAY=:0 xset s off
+	DISPLAY=:0 fluxbox &
+fi
