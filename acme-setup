@@ -32,15 +32,12 @@ alias goperf='cd $ACME_HOME/nuttx/misc/tools/ara/loopback-perf'
 alias | grep ara
 
 
-## acme-install
+## acme-install (buildroot version)
 echo "if [ -d $TFTP_DIR ]; then " > $ACME_SCRIPTS/acme-k-install
-echo "sudo cp $KERNEL_BUILD/arch/arm/boot/zImage $TFTP_DIR" >> $ACME_SCRIPTS/acme-k-install
-echo "sudo cp $KERNEL_BUILD/arch/arm/boot/dts/am335x-boneblack.dtb $TFTP_DIR/dtbs"  >> $ACME_SCRIPTS/acme-k-install
-echo "sudo ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE INSTALL_MOD_PATH=$INSTALL_MOD_PATH" \
-     "make -C $KERNEL_BUILD_DIR modules_install"  >> $ACME_SCRIPTS/acme-k-install
+echo "sudo cp $INSTALL_MOD_PATH/zImage $TFTP_DIR" >> $ACME_SCRIPTS/acme-k-install
+echo "sudo cp $INSTALL_MOD_PATH/am335x-boneblack.dtb $TFTP_DIR/dtbs"  >> $ACME_SCRIPTS/acme-k-install
 echo "fi" >> $ACME_SCRIPTS/acme-k-install
 echo "sync" >> $ACME_SCRIPTS/acme-k-install
-
 
 ## sigrok
 

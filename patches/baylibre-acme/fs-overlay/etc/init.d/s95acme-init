@@ -1,29 +1,34 @@
 #!/bin/sh
+#
+# ACME init
+#
 
-# Load the GPIO expander driver, enable appropriate
-# GPIOs for each probe and finally load ina2xx and tmp401
-# drivers to detect the probe sensors.
-
-if [ "$1" == "start" ]
-then
-	PRB_EN_GPIOS="484 496 500 480 476 504 508 472"
-	GPIO_BASE_PATH="/sys/class/gpio/"
-
+start() {
+	modprobe ina2xx
+	modprobe at24
 	modprobe gpio-pca953x
 
-	for GPIO in $PRB_EN_GPIOS
+	i2cset -y 1 0x21 0x00 2> /dev/null
+	echo pca9534 0x21 > /sys/class/i2c-adapter/i2c-1/new_device
+
+	echo 504 > /sys/class/gpio/export 
+	echo out > /sys/class/gpio/gpio504/direction
+
+	for ADDR in 0x40 0x41 0x42 0x43 0x44 0x45 0x46 0x47
 	do
-		echo $GPIO > $GPIO_BASE_PATH/export
-		GPIO_PATH=$GPIO_BASE_PATH/gpio$GPIO/
-		echo out > $GPIO_PATH/direction
-		echo 1 > $GPIO_PATH/value
+		i2cget -y 1 $ADDR && echo ina226 $ADDR > /sys/class/i2c-adapter/i2c-1/new_device \
+			&& echo 24c02 $(printf "0x%X\n" $(( $ADDR + 0x10 ))) > /sys/class/i2c-adapter/i2c-1/new_device
 	done
 
-	rmmod ina2xx
-	rmmod tmp401
+	i2cset -y 1 0x20 0x00 2> /dev/null
+	echo pca9535 0x20 > /sys/class/i2c-adapter/i2c-1/new_device
 
-	modprobe ina2xx
-	modprobe tmp401
+	for GPIO in 489 491 493 495 497 499 501 503
+	do
+		echo $GPIO > /sys/class/gpio/export
+		echo out > /sys/class/gpio/gpio$GPIO/direction
+		echo 1 > /sys/class/gpio/gpio$GPIO/value
+	done
 
 	export DISPLAY=:1
 	Xvfb :1 -screen 0 1600x900x16 &
@@ -32,4 +37,19 @@ then
 	X -mouse evdev,,/dev/input/event0 &
 	DISPLAY=:0 xset s off
 	DISPLAY=:0 fluxbox &
-fi
+	DISPLAY=:0 fbsetbg /root/logo_bl.png
+	sleep 5
+	DISPLAY=:0 pulseview -platform xcb -style motif -geometry 1280x665+0+0 &
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  *)
+	echo "Usage: $0 {start}"
+	exit 1
+esac
+
+exit $?
+
