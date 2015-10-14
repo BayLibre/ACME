@@ -35,7 +35,8 @@ alias | grep ara
 echo "if [ -d $TFTP_DIR ]; then " > $ACME_SCRIPTS/acme-k-install
 echo "sudo cp $KERNEL_BUILD/arch/arm/boot/zImage $TFTP_DIR" >> $ACME_SCRIPTS/acme-k-install
 echo "sudo cp $KERNEL_BUILD/arch/arm/boot/dts/am335x-boneblack.dtb $TFTP_DIR/dtbs"  >> $ACME_SCRIPTS/acme-k-install
-echo "sudo make -C $KERNEL_BUILD_DIR modules_install"  >> $ACME_SCRIPTS/acme-k-install
+echo "sudo ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE INSTALL_MOD_PATH=$INSTALL_MOD_PATH" \
+     "make -C $KERNEL_BUILD_DIR modules_install"  >> $ACME_SCRIPTS/acme-k-install
 echo "fi" >> $ACME_SCRIPTS/acme-k-install
 echo "sync" >> $ACME_SCRIPTS/acme-k-install
 
@@ -49,14 +50,15 @@ echo "cp $ACME_PATCHES/acme_linux_defconfig $KERNEL_BUILD/.config" >> $ACME_SCRI
 echo "make -C $KERNEL_BUILD oldconfig "  > $ACME_SCRIPTS/kbuild
 echo "make -C $KERNEL_BUILD zImage modules dtbs" >> $ACME_SCRIPTS/kbuild
 
-##br-prep
-echo 'export CONFIG_="BR2_"' > $ACME_SCRIPTS/br-prep
-echo "cd $ACME_HOME/buildroot && make beaglebone_defconfig" >> $ACME_SCRIPTS/br-prep
-echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_STRACE" >> $ACME_SCRIPTS/br-prep
-echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_EUDEV" >> $ACME_SCRIPTS/br-prep
-echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_EVTEST" >> $ACME_SCRIPTS/br-prep
-echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_I2C_TOOLS" >> $ACME_SCRIPTS/br-prep
-
+###br-prep
+#echo 'export CONFIG_="BR2_"' > $ACME_SCRIPTS/br-prep
+#echo "export ARCH=$ARCH ; export CROSS_COMPILE=$CROSS_COMPILE" >> $ACME_SCRIPTS/br-prep
+#echo "make -C $ACME_HOME/buildroot beaglebone_defconfig" >> $ACME_SCRIPTS/br-prep
+#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_STRACE" >> $ACME_SCRIPTS/br-prep
+#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_EUDEV" >> $ACME_SCRIPTS/br-prep
+#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_EVTEST" >> $ACME_SCRIPTS/br-prep
+#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_I2C_TOOLS" >> $ACME_SCRIPTS/br-prep
+#echo "cd $ACME_HOME/buildroot && kconfig-tweak --disable LINUX_KERNEL" >> $ACME_SCRIPTS/br-prep
 
 chmod +x $ACME_SCRIPTS/*
 
