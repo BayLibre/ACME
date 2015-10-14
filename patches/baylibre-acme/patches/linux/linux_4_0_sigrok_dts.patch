@@ -1,0 +1,142 @@
+From e1a2e34aa969dbb8870ffc48d25884d1c57dce4e Mon Sep 17 00:00:00 2001
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date: Mon, 13 Apr 2015 16:00:12 +0200
+Subject: [PATCH] dts/am335x-boneblack: add i2c definitions required by ACME
+
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ arch/arm/boot/dts/am335x-boneblack.dts | 111 +++++++++++++++++++++++++++++++++
+ 1 file changed, 111 insertions(+)
+
+diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
+index 5c42d25..577d128 100644
+--- a/arch/arm/boot/dts/am335x-boneblack.dts
++++ b/arch/arm/boot/dts/am335x-boneblack.dts
+@@ -13,6 +13,22 @@
+ / {
+ 	model = "TI AM335x BeagleBone Black";
+ 	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
++
++	/*
++	 * This is not an actual regulator - it's a hack to enable the
++	 * GPIO reset pin of the ACME cape. In the future it should be
++	 * done on the hardware layer.
++	 */
++	acme_reg: acme_reg@0 {
++		compatible = "regulator-fixed";
++		regulator-name = "acme_reg";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		regulator-boot-on;
++		gpio = <&gpio3 19 0>;
++		startup-delay-us = <70000>;
++		gpios-states = <1>;
++	};
+ };
+ 
+ &ldo3_reg {
+@@ -64,6 +80,101 @@
+ 			0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
+ 		>;
+ 	};
++
++	i2c2_pins: pinmux_i2c2_pins {
++		pinctrl-single,pins = <
++			0x178 (PIN_INPUT_PULLUP | MUX_MODE3)
++			0x17c (PIN_INPUT_PULLUP | MUX_MODE3)
++		>;
++	};
++
++	i2c1_pins: pinmux_i2c1_pins {
++		pinctrl-single,pins = <
++			0x158 (PIN_INPUT_PULLUP | MUX_MODE2)
++			0x15c (PIN_INPUT_PULLUP | MUX_MODE2)
++		>;
++	};
++};
++
++&i2c1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c1_pins>;
++
++	status = "okay";
++	clock-frequency = <400000>;
++
++	pca9698: pca9698@20 {
++		compatible = "nxp,pca9698";
++
++		reg = <0x20>;
++	};
++
++	ina226_0: ina226@40 {
++		compatible = "ti,ina226";
++		reg = <0x40>;
++	};
++
++	ina226_1: ina226@41 {
++		compatible = "ti,ina226";
++		reg = <0x41>;
++	};
++
++	ina226_2: ina226@44 {
++		compatible = "ti,ina226";
++		reg = <0x44>;
++	};
++	ina226_3: ina226@45 {
++		compatible = "ti,ina226";
++		reg = <0x45>;
++	};
++
++	ina226_4: ina226@42 {
++		compatible = "ti,ina226";
++		reg = <0x42>;
++	};
++
++	ina226_5: ina226@43 {
++		compatible = "ti,ina226";
++		reg = <0x43>;
++	};
++
++	ina226_6: ina226@46 {
++		compatible = "ti,ina226";
++		reg = <0x46>;
++	};
++
++	ina226_7: ina226@47 {
++		compatible = "ti,ina226";
++		reg = <0x47>;
++	};
++
++	tmp435_0: tmp435@4c {
++		compatible = "ti,tmp435";
++		reg = <0x4c>;
++	};
++
++	tmp435_1: tmp435@49 {
++		compatible = "ti,tmp435";
++		reg = <0x49>;
++	};
++
++	tmp435_2: tmp435@4f {
++		compatible = "ti,tmp435";
++		reg = <0x4f>;
++	};
++
++	tmp435_3: tmp435@4b {
++		compatible = "ti,tmp435";
++		reg = <0x4b>;
++	};
++};
++
++&i2c2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&i2c2_pins>;
++
++	status = "okay";
++	clock-frequency = <400000>;
+ };
+ 
+ &lcdc {
+-- 
+2.1.4
+
