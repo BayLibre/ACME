@@ -15,7 +15,8 @@ export TFTP_DIR=/var/lib/tftpboot
 
 export ARCH=arm
 export CROSS_COMPILE=arm-linux-gnueabi-
-export INSTALL_MOD_PATH=/media/marc/Angstrom
+#export INSTALL_MOD_PATH=/media/marc/Angstrom
+export INSTALL_MOD_PATH=$ACME_HOME/buildroot/output/images
 
 mkdir -p $ACME_SCRIPTS
 
@@ -40,6 +41,10 @@ echo "sudo ARCH=$ARCH CROSS_COMPILE=$CROSS_COMPILE INSTALL_MOD_PATH=$INSTALL_MOD
 echo "fi" >> $ACME_SCRIPTS/acme-k-install
 echo "sync" >> $ACME_SCRIPTS/acme-k-install
 
+
+## sigrok
+
+#./configure --enable-baylibre-acme --prefix=$INSTALL_MOD_PATH --host=arm-linux-gnueabi
 
 ## kprep
 echo "mkdir -p $KERNEL_BUILD" > $ACME_SCRIPTS/kprep
