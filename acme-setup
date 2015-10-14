@@ -45,11 +45,9 @@ echo "sync" >> $ACME_SCRIPTS/acme-k-install
 
 ## kprep
 echo "mkdir -p $KERNEL_BUILD" > $ACME_SCRIPTS/kprep
-echo "make -C $KERNEL_SRC O=$KERNEL_BUILD omap2plus_defconfig"  >> $ACME_SCRIPTS/kprep
-echo "cp $ACME_PATCHES/acme_linux_defconfig $KERNEL_BUILD/.config" >> $ACME_SCRIPTS/kprep
+echo "make -C $KERNEL_SRC O=$KERNEL_BUILD acme_defconfig"  >> $ACME_SCRIPTS/kprep
 
 ## kbuild
-echo "make -C $KERNEL_BUILD oldconfig "  > $ACME_SCRIPTS/kbuild
 echo "make -C $KERNEL_BUILD zImage modules dtbs" >> $ACME_SCRIPTS/kbuild
 
 ###br-prep
