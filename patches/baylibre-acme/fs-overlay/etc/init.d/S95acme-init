@@ -11,7 +11,7 @@ start() {
 	i2cset -y 1 0x21 0x00 2> /dev/null
 	echo pca9534 0x21 > /sys/class/i2c-adapter/i2c-1/new_device
 
-	echo 504 > /sys/class/gpio/export 
+	echo 504 > /sys/class/gpio/export
 	echo out > /sys/class/gpio/gpio504/direction
 
 	for ADDR in 0x40 0x41 0x42 0x43 0x44 0x45 0x46 0x47
@@ -30,16 +30,16 @@ start() {
 		echo 1 > /sys/class/gpio/gpio$GPIO/value
 	done
 
-	export DISPLAY=:1
-	Xvfb :1 -screen 0 1600x900x16 &
-	fluxbox 2> /dev/null &
-	x11vnc -display :1  -nopw -listen localhost -xkb &
-	X -mouse evdev,,/dev/input/event0 &
-	DISPLAY=:0 xset s off
-	DISPLAY=:0 fluxbox &
-	DISPLAY=:0 fbsetbg /root/logo_bl.png
-	sleep 5
-	DISPLAY=:0 pulseview -platform xcb -style motif -geometry 1280x665+0+0 &
+#	export DISPLAY=:1
+#	Xvfb :1 -screen 0 1600x900x16 &
+#	fluxbox 2> /dev/null &
+#	x11vnc -display :1  -nopw -listen localhost -xkb &
+#	X -mouse evdev,,/dev/input/event0 &
+#	DISPLAY=:0 xset s off
+#	DISPLAY=:0 fluxbox &
+#	DISPLAY=:0 fbsetbg /root/logo_bl.png
+#	sleep 5
+#	DISPLAY=:0 pulseview -platform xcb -style motif -geometry 1280x665+0+0 &
 }
 
 case "$1" in

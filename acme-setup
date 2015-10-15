@@ -48,7 +48,11 @@ echo "mkdir -p $KERNEL_BUILD" > $ACME_SCRIPTS/kprep
 echo "make -C $KERNEL_SRC O=$KERNEL_BUILD acme_defconfig"  >> $ACME_SCRIPTS/kprep
 
 ## kbuild
-echo "make -C $KERNEL_BUILD zImage modules dtbs" >> $ACME_SCRIPTS/kbuild
+echo "make -j 5 -C $KERNEL_BUILD zImage modules dtbs" > $ACME_SCRIPTS/kbuild
+echo "make -C $KERNEL_BUILD modules_install" >> $ACME_SCRIPTS/kbuild
+echo "sudo cp $KERNEL_BUILD/arch/arm/boot/zImage $TFTP_DIR"  >> $ACME_SCRIPTS/kbuild
+echo "sudo cp $KERNEL_BUILD/arch/arm/boot/dts/am335x-boneblack.dtb $TFTP_DIR/dtbs"  >> $ACME_SCRIPTS/kbuild
+
 
 ###br-prep
 #echo 'export CONFIG_="BR2_"' > $ACME_SCRIPTS/br-prep
