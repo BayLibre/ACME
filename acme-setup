@@ -46,6 +46,7 @@ echo "sync" >> $ACME_SCRIPTS/acme-k-install
 ## kprep
 echo "mkdir -p $KERNEL_BUILD" > $ACME_SCRIPTS/kprep
 echo "make -C $KERNEL_SRC O=$KERNEL_BUILD acme_defconfig"  >> $ACME_SCRIPTS/kprep
+echo "cd  $KERNEL_BUILD && kconfig-tweak --enable FUNCTION_TRACER" >> $ACME_SCRIPTS/kprep
 
 ## kbuild
 echo "make -j 5 -C $KERNEL_BUILD zImage modules dtbs" > $ACME_SCRIPTS/kbuild
@@ -55,14 +56,9 @@ echo "sudo cp $KERNEL_BUILD/arch/arm/boot/dts/am335x-boneblack.dtb $TFTP_DIR/dtb
 
 
 ###br-prep
-#echo 'export CONFIG_="BR2_"' > $ACME_SCRIPTS/br-prep
-#echo "export ARCH=$ARCH ; export CROSS_COMPILE=$CROSS_COMPILE" >> $ACME_SCRIPTS/br-prep
-#echo "make -C $ACME_HOME/buildroot beaglebone_defconfig" >> $ACME_SCRIPTS/br-prep
-#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_STRACE" >> $ACME_SCRIPTS/br-prep
-#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_EUDEV" >> $ACME_SCRIPTS/br-prep
-#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_EVTEST" >> $ACME_SCRIPTS/br-prep
-#echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_I2C_TOOLS" >> $ACME_SCRIPTS/br-prep
-#echo "cd $ACME_HOME/buildroot && kconfig-tweak --disable LINUX_KERNEL" >> $ACME_SCRIPTS/br-prep
+echo 'export CONFIG_="BR2_"' > $ACME_SCRIPTS/br-prep
+echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_TRACE_CMD" >> $ACME_SCRIPTS/br-prep
+echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_LM_SENSORS" >> $ACME_SCRIPTS/br-prep
 
 chmod +x $ACME_SCRIPTS/*
 
