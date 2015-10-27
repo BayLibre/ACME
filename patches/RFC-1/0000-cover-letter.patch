@@ -1,0 +1,16 @@
+From 505d687430b762e122405312e1ac189a126dfd02 Mon Sep 17 00:00:00 2001
+From: Marc Titinger <mtitinger+renesas@baylibre.com>
+Date: Mon, 19 Oct 2015 17:27:12 +0200
+Subject: [RFC] *** SUBJECT HERE ***
+
+*** BLURB HERE ***
+
+Marc Titinger (1):
+  hwmon: ina2xx: allow for actual measurement bandwidth above 160 Hz
+
+ drivers/hwmon/ina2xx.c | 89 +++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 70 insertions(+), 19 deletions(-)
+
+-- 
+1.9.1
+
