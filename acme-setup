@@ -18,6 +18,9 @@ export CROSS_COMPILE=arm-linux-gnueabi-
 #export INSTALL_MOD_PATH=/media/marc/Angstrom
 export INSTALL_MOD_PATH=$ACME_HOME/buildroot/output/images
 
+##  PRU stuff
+export PRU_SDK_DIR=$ACME_HOME/pru_sdk
+
 mkdir -p $ACME_SCRIPTS
 
 # any of nuttx or phabos
