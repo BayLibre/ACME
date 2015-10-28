@@ -62,6 +62,15 @@ echo "cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_LM_SENSORS" >> $
 
 chmod +x $ACME_SCRIPTS/*
 
+if [  -f ~/.gitconfig_RENESAS  ]
+then
+	echo "setting non-renesas git ID"
+	cp ~/.gitconfig_BAYLIBRE ~/.gitconfig
+	cp ~/.vimrc_ACME ~/.vimrc
+else
+	echo "renesas itconfig missing?"
+fi
+
 
 ####
 
