@@ -4,7 +4,7 @@
 #
 
 start() {
-	modprobe ina2xx-iio
+	modprobe ina2xx
 	modprobe at24
 	modprobe gpio-pca953x
 
@@ -30,8 +30,16 @@ start() {
 		echo 1 > /sys/class/gpio/gpio$GPIO/value
 	done
 
-	# TODO: start iiod
-
+#	export DISPLAY=:1
+#	Xvfb :1 -screen 0 1600x900x16 &
+#	fluxbox 2> /dev/null &
+#	x11vnc -display :1  -nopw -listen localhost -xkb &
+#	X -mouse evdev,,/dev/input/event0 &
+#	DISPLAY=:0 xset s off
+#	DISPLAY=:0 fluxbox &
+#	DISPLAY=:0 fbsetbg /root/logo_bl.png
+#	sleep 5
+#	DISPLAY=:0 pulseview -platform xcb -style motif -geometry 1280x665+0+0 &
 }
 
 case "$1" in

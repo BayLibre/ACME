@@ -50,6 +50,11 @@ echo "sync" >> $ACME_SCRIPTS/acme-k-install
 echo "mkdir -p $KERNEL_BUILD" > $ACME_SCRIPTS/kprep
 echo "make -C $KERNEL_SRC O=$KERNEL_BUILD acme_defconfig"  >> $ACME_SCRIPTS/kprep
 echo "cd  $KERNEL_BUILD && kconfig-tweak --enable FUNCTION_TRACER" >> $ACME_SCRIPTS/kprep
+#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO" >> $ACME_SCRIPTS/kprep
+#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO_BUFFER" >> $ACME_SCRIPTS/kprep
+#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO_TRIGGERED_BUFFER" >> $ACME_SCRIPTS/kprep
+#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO_TRIGGER" >> $ACME_SCRIPTS/kprep
+#echo "cd  $KERNEL_BUILD && kconfig-tweak --set-integer IIO_CONSUMERS_PER_TRIGGER=2" >> $ACME_SCRIPTS/kprep
 
 ## kbuild
 echo "make -j 5 -C $KERNEL_BUILD zImage modules dtbs" > $ACME_SCRIPTS/kbuild
