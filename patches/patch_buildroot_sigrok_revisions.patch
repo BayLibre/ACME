@@ -32,17 +32,20 @@ index c0a4017..9502579 100644
  LIBSIGROKDECODE_SITE = git://sigrok.org/libsigrokdecode
  LIBSIGROKDECODE_LICENSE = GPLv3+
 diff --git a/package/sigrok-cli/sigrok-cli.mk b/package/sigrok-cli/sigrok-cli.mk
-index 34e0a0e..bd915cf 100644
+index 34e0a0e..b79a1b9 100644
 --- a/package/sigrok-cli/sigrok-cli.mk
 +++ b/package/sigrok-cli/sigrok-cli.mk
-@@ -4,7 +4,9 @@
+@@ -4,9 +4,11 @@
  #
  ################################################################################
  
 -SIGROK_CLI_VERSION = c59bf72b694ab1d08b2ea44de4349c277e206414
-+SIGROK_CLI_VERSION = master
-+#SIGROK_CLI_VERSION = c59bf72b694ab1d08b2ea44de4349c277e206414
-+# No https access on upstream git
++SIGROK_CLI_VERSION = generic-iio
  # No https access on upstream git
- SIGROK_CLI_SITE = git://sigrok.org/sigrok-cli
+-SIGROK_CLI_SITE = git://sigrok.org/sigrok-cli
++SIGROK_CLI_SITE = ssh://git@git.baylibre.com:priv/marct/sigrok-cli
++SIGROK_CLI_SITE_METHOD=git
++
  SIGROK_CLI_LICENSE = GPLv3+
+ SIGROK_CLI_LICENSE_FILES = COPYING
+ # Git checkout has no configure script
