@@ -1,0 +1,48 @@
+diff --git a/package/libsigrok/libsigrok.mk b/package/libsigrok/libsigrok.mk
+index 54d0482..a054ad5 100644
+--- a/package/libsigrok/libsigrok.mk
++++ b/package/libsigrok/libsigrok.mk
+@@ -4,9 +4,12 @@
+ #
+ ################################################################################
+ 
+-LIBSIGROK_VERSION = fe473123ba836445d477149f2e2c0ae372fc0c4c
++#LIBSIGROK_VERSION = fe473123ba836445d477149f2e2c0ae372fc0c4c
++LIBSIGROK_VERSION = generic-iio
+ # No https access on upstream git
+-LIBSIGROK_SITE = git://sigrok.org/libsigrok
++LIBSIGROK_SITE = ssh://git@git.baylibre.com/pub/acme/libsigrok
++LIBSIGROK_SITE_METHOD = git
++
+ LIBSIGROK_LICENSE = GPLv3+
+ LIBSIGROK_LICENSE_FILES = COPYING
+ # Git checkout has no configure script
+diff --git a/package/libsigrokdecode/libsigrokdecode.mk b/package/libsigrokdecode/libsigrokdecode.mk
+index c0a4017..9502579 100644
+--- a/package/libsigrokdecode/libsigrokdecode.mk
++++ b/package/libsigrokdecode/libsigrokdecode.mk
+@@ -4,7 +4,8 @@
+ #
+ ################################################################################
+ 
+-LIBSIGROKDECODE_VERSION = 9177963de41c2d003d417049470eea3c98eeb2ef
++#LIBSIGROKDECODE_VERSION = 9177963de41c2d003d417049470eea3c98eeb2ef
++LIBSIGROKDECODE_VERSION = master
+ # No https access on upstream git
+ LIBSIGROKDECODE_SITE = git://sigrok.org/libsigrokdecode
+ LIBSIGROKDECODE_LICENSE = GPLv3+
+diff --git a/package/sigrok-cli/sigrok-cli.mk b/package/sigrok-cli/sigrok-cli.mk
+index 34e0a0e..bd915cf 100644
+--- a/package/sigrok-cli/sigrok-cli.mk
++++ b/package/sigrok-cli/sigrok-cli.mk
+@@ -4,7 +4,9 @@
+ #
+ ################################################################################
+ 
+-SIGROK_CLI_VERSION = c59bf72b694ab1d08b2ea44de4349c277e206414
++SIGROK_CLI_VERSION = master
++#SIGROK_CLI_VERSION = c59bf72b694ab1d08b2ea44de4349c277e206414
++# No https access on upstream git
+ # No https access on upstream git
+ SIGROK_CLI_SITE = git://sigrok.org/sigrok-cli
+ SIGROK_CLI_LICENSE = GPLv3+
