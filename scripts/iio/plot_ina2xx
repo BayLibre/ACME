@@ -1,8 +1,8 @@
 set term png
 set output "iio-test.png"
-plot "/home/marc/work/ACME/buildroot/output/images/result" binary format="%4int16%int64" u 5:1 w l, \
- "/home/marc/work/ACME/buildroot/output/images/result" binary format="%4int16%int64" u 5:2 w l, \
- "/home/marc/work/ACME/buildroot/output/images/result" binary format="%4int16%int64" u 5:3 w l, \
- "/home/marc/work/ACME/buildroot/output/images/result" binary format="%4int16%int64" u 5:4 w l
+plot "result" binary format="%4int16%int64" u 5:1 w l title "vhsunt" , \
+ "result" binary format="%4int16%int64" u 5:2 w l title "vbus" , \
+ "result" binary format="%4int16%int64" u 5:3 w l title "current" , \
+ "result" binary format="%4int16%int64" u 5:4 w l title "power"
 set term x11
 

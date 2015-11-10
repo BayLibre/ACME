@@ -1,0 +1,4 @@
+
+git send-email --no-chain-reply-to --to jic23@kernel.org --to knaack.h@gmx.de --to lars@metafoo.de --to pmeerw@pmeerw.net --cc linux-iio@vger.kernel.org --cc linux-kernel@vger.kernel.org --cc mturquette@baylibre.com --cc bcousson@baylibre.com -cc ptitiano@baylibre.com
+
+
