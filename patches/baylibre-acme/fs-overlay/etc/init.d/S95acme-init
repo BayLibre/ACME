@@ -4,6 +4,11 @@
 #
 
 start() {
+
+	## experimentation with sw-triggers
+	#
+	modprobe industrialio-sw-trigger
+
 	modprobe ina2xx-iio
 	modprobe at24
 	modprobe gpio-pca953x
