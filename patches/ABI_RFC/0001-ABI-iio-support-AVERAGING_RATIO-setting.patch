@@ -1,0 +1,106 @@
+From 00e4cdc9aa501e9b52888804bfba4713d36eb966 Mon Sep 17 00:00:00 2001
+From: Marc Titinger <mtitinger@baylibre.com>
+Date: Tue, 17 Nov 2015 11:35:31 +0100
+Subject: [RFC 1/2] ABI: iio: support AVERAGING_RATIO setting
+
+Some ADC devices allow averaging/downsampling. The minimal parameter
+set for this will be the number of taps used for computing a mean value.
+
+In some cases the ratio will hold discrete values for instance "1, 4, 16"
+hence an averaging_ratio_available property is useful. The possible ratio
+values are less likely to changing with the device settings, so this patch
+only provides a CONST version of the definition helper.
+
+Tested with ina226:
+
+# ls /sys/bus/iio/devices/iio\:device0/
+averaging_ratio_available     in_voltage0_raw
+dev                           in_voltage1_raw
+in_averaging_ratio            name
+in_calibscale                 power
+in_current2_raw               sampling_frequency_available
+in_power3_raw                 subsystem
+in_sampling_frequency         uevent
+
+# cat averaging_ratio_available
+1, 4, 16, 64, 128, 256, 512, 1024
+
+Signed-off-by: Marc Titinger <mtitinger@baylibre.com>
+---
+ Documentation/ABI/testing/sysfs-bus-iio | 13 +++++++++++++
+ drivers/iio/industrialio-core.c         |  1 +
+ include/linux/iio/iio.h                 |  1 +
+ include/linux/iio/sysfs.h               |  9 +++++++++
+ 4 files changed, 24 insertions(+)
+
+diff --git a/Documentation/ABI/testing/sysfs-bus-iio b/Documentation/ABI/testing/sysfs-bus-iio
+index 42d360f..a208dfe 100644
+--- a/Documentation/ABI/testing/sysfs-bus-iio
++++ b/Documentation/ABI/testing/sysfs-bus-iio
+@@ -56,6 +56,19 @@ Description:
+ 		When the internal sampling clock can only take a small
+ 		discrete set of values, this file lists those available.
+ 
++What:		/sys/bus/iio/devices/iio:deviceX/averaging_ratio
++KernelVersion:	4.x.x
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Hardware dependent ADC averaging. Controls the averaging ratio
++		of the digital filter if available.
++
++What:		/sys/bus/iio/devices/iio:deviceX/averaging_ratio_available
++KernelVersion:	4.x.x
++Contact:	linux-iio@vger.kernel.org
++Description:
++		Hardware dependent values supported by the averaging filter.
++
+ What:		/sys/bus/iio/devices/iio:deviceX/oversampling_ratio
+ KernelVersion:	2.6.38
+ Contact:	linux-iio@vger.kernel.org
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index b3fcc2c..e4745f0 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -142,6 +142,7 @@ static const char * const iio_chan_info_postfix[] = {
+ 	[IIO_CHAN_INFO_DEBOUNCE_TIME] = "debounce_time",
+ 	[IIO_CHAN_INFO_CALIBEMISSIVITY] = "calibemissivity",
+ 	[IIO_CHAN_INFO_OVERSAMPLING_RATIO] = "oversampling_ratio",
++	[IIO_CHAN_INFO_AVERAGING_RATIO] = "averaging_ratio",
+ };
+ 
+ /**
+diff --git a/include/linux/iio/iio.h b/include/linux/iio/iio.h
+index 7bb7f67..4c84de5 100644
+--- a/include/linux/iio/iio.h
++++ b/include/linux/iio/iio.h
+@@ -46,6 +46,7 @@ enum iio_chan_info_enum {
+ 	IIO_CHAN_INFO_DEBOUNCE_TIME,
+ 	IIO_CHAN_INFO_CALIBEMISSIVITY,
+ 	IIO_CHAN_INFO_OVERSAMPLING_RATIO,
++	IIO_CHAN_INFO_AVERAGING_RATIO,
+ };
+ 
+ enum iio_shared_by {
+diff --git a/include/linux/iio/sysfs.h b/include/linux/iio/sysfs.h
+index 9cd8f74..4478ba1 100644
+--- a/include/linux/iio/sysfs.h
++++ b/include/linux/iio/sysfs.h
+@@ -76,6 +76,15 @@ struct iio_const_attr {
+ /* Generic attributes of onetype or another */
+ 
+ /**
++ * IIO_CONST_ATTR_AVERAGING_RATIO_AVAIL - list available averaging ratios
++ * @_string: ratio string for the attribute
++ *
++ * Constant version
++ **/
++#define IIO_CONST_ATTR_AVERAGING_RATIO_AVAIL(_string)                 \
++	IIO_CONST_ATTR(averaging_ratio_available, _string)
++
++/**
+  * IIO_DEV_ATTR_SAMP_FREQ - sets any internal clock frequency
+  * @_mode: sysfs file mode/permissions
+  * @_show: output method for the attribute
+-- 
+1.9.1
+
