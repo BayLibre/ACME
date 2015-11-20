@@ -16,7 +16,7 @@ sigrok-cli -d baylibre-acme --samples 500 --config samplerate=$2 -O csv  > /samp
 
 trace-cmd stop
 trace-cmd extract
-mv result /trace-$1-2$hz
+mv trace.dat /trace-$1-$2hz.dat
 
 
 
