@@ -1,16 +1,9 @@
 From cf61b6dd54a81f68c2ef0b54af59a34da6d1cbb3 Mon Sep 17 00:00:00 2001
 From: Marc Titinger <mtitinger@baylibre.com>
-Date: Wed, 18 Nov 2015 15:11:44 +0100
-Subject: [RFC 0/9] spawn hrtimer trigger from client driver upon enabling buffer
+Date: Wed, 18 Nov 2015 16:52:56 +0100
+Subject: [RFC 0/9] *** SUBJECT HERE ***
 
-this builds upon the sw-trigger / hrtimer series from Daniel[1]
-in order to create the trigger upon enabling the buffer when the
-sampling frequency is known. This is useful for devices without
-hardware streaming scheme, to avoid the complexity of creating
-a separate trigger through configfs, and then setting
-the sw-trigger frequency from both device0 and the trigger.
-
-[1]: https://lkml.org/lkml/2015/10/23/369
+*** BLURB HERE ***
 
 Daniel Baluta (5):
   configfs: Allow dynamic group creation
