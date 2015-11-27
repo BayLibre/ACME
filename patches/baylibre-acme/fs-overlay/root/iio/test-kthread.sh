@@ -13,12 +13,11 @@ echo 1 > /sys/bus/iio/devices/iio:device0/scan_elements/in_timestamp_en
 
 trace-cmd start -p nop
 
-#echo 1 > /sys/bus/iio/devices/iio\:device0/buffer/enable
+echo 1 > /sys/bus/iio/devices/iio\:device0/buffer/enable
 
-#dd if=/dev/iio\:device0  of=/result
-iio_readdev ina226 > result &
+dd if=/dev/iio\:device0  of=/result count=400
 
-#echo 0 > /sys/bus/iio/devices/iio\:device0/buffer/enable
+echo 0 > /sys/bus/iio/devices/iio\:device0/buffer/enable
 
 trace-cmd stop
 trace-cmd extract
