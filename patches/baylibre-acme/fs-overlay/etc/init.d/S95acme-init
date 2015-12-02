@@ -4,12 +4,9 @@
 #
 
 start() {
+	#mount -t configfs none /config
 
-	## experimentation with sw-triggers
-	#
-	modprobe industrialio-sw-trigger
-
-	modprobe ina2xx-iio
+	modprobe ina2xx-adc
 	modprobe at24
 	modprobe gpio-pca953x
 
@@ -34,9 +31,6 @@ start() {
 		echo out > /sys/class/gpio/gpio$GPIO/direction
 		echo 1 > /sys/class/gpio/gpio$GPIO/value
 	done
-
-	# TODO: start iiod
-
 }
 
 case "$1" in
