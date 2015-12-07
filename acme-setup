@@ -30,7 +30,6 @@ export PATH+=:$ACME_HOME/JLink_Linux_V502e_x86_64
 ## host-side gbsim
 alias ccc='cd $ACME_HOME'
 alias gdbsvc='JLinkGDBServer -device STM32F417IG'
-alias goperf='cd $ACME_HOME/nuttx/misc/tools/ara/loopback-perf'
 
 alias | grep ara
 
