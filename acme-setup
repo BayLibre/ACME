@@ -2,10 +2,8 @@
 
 ## loopback test ###
 
-export LBTEST_AP_IP=192.168.2.69
+export TOPLEVEL=$HOME
 
-## Set your Home here (I`m using an external drive)
-export TOPLEVEL=/home/marc/work
 export ACME_HOME=$TOPLEVEL/ACME
 export ACME_SCRIPTS=$ACME_HOME/scripts
 export KERNEL_BUILD=$ACME_HOME/kbuild
@@ -15,24 +13,20 @@ export TFTP_DIR=/var/lib/tftpboot
 
 export ARCH=arm
 export CROSS_COMPILE=arm-linux-gnueabi-
-#export INSTALL_MOD_PATH=/media/marc/Angstrom
-export INSTALL_MOD_PATH=$ACME_HOME/buildroot/output/images
 
-##  PRU stuff
-export PRU_SDK_DIR=$ACME_HOME/pru_sdk
+#
+# Note on using NFS: this will work nicely if the
+# buildroot output/image dir is exported and used as scratch
+# nfs rootfs.
+#
+export INSTALL_MOD_PATH=$ACME_HOME/buildroot/output/images
 
 mkdir -p $ACME_SCRIPTS
 
-# any of nuttx or phabos
 export PATH+=:$ACME_SCRIPTS
+
 export PATH+=:$ACME_HOME/JLink_Linux_V502e_x86_64
-
-## host-side gbsim
-alias ccc='cd $ACME_HOME'
 alias gdbsvc='JLinkGDBServer -device STM32F417IG'
-
-alias | grep ara
-
 
 ## acme-install (buildroot version)
 echo "if [ -d $TFTP_DIR ]; then " > $ACME_SCRIPTS/acme-k-install
@@ -41,26 +35,16 @@ echo "sudo cp $INSTALL_MOD_PATH/am335x-boneblack.dtb $TFTP_DIR/dtbs"  >> $ACME_S
 echo "fi" >> $ACME_SCRIPTS/acme-k-install
 echo "sync" >> $ACME_SCRIPTS/acme-k-install
 
-## sigrok
-
-#./configure --enable-baylibre-acme --prefix=$INSTALL_MOD_PATH --host=arm-linux-gnueabi
-
 ## kprep
 echo "mkdir -p $KERNEL_BUILD" > $ACME_SCRIPTS/kprep
 echo "make -C $KERNEL_SRC O=$KERNEL_BUILD acme_defconfig"  >> $ACME_SCRIPTS/kprep
 echo "cd  $KERNEL_BUILD && kconfig-tweak --enable FUNCTION_TRACER" >> $ACME_SCRIPTS/kprep
-#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO" >> $ACME_SCRIPTS/kprep
-#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO_BUFFER" >> $ACME_SCRIPTS/kprep
-#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO_TRIGGERED_BUFFER" >> $ACME_SCRIPTS/kprep
-#echo "cd  $KERNEL_BUILD && kconfig-tweak --enable IIO_TRIGGER" >> $ACME_SCRIPTS/kprep
-#echo "cd  $KERNEL_BUILD && kconfig-tweak --set-integer IIO_CONSUMERS_PER_TRIGGER=2" >> $ACME_SCRIPTS/kprep
 
 ## kbuild
 echo "make -j 5 -C $KERNEL_BUILD zImage modules dtbs" > $ACME_SCRIPTS/kbuild
 echo "make -C $KERNEL_BUILD modules_install" >> $ACME_SCRIPTS/kbuild
 echo "sudo cp $KERNEL_BUILD/arch/arm/boot/zImage $TFTP_DIR"  >> $ACME_SCRIPTS/kbuild
 echo "sudo cp $KERNEL_BUILD/arch/arm/boot/dts/am335x-boneblack.dtb $TFTP_DIR/dtbs"  >> $ACME_SCRIPTS/kbuild
-
 
 ###br-prep
 echo 'export CONFIG_="BR2_"' > $ACME_SCRIPTS/br-prep
@@ -77,14 +61,4 @@ then
 else
 	echo "renesas itconfig missing?"
 fi
-
-
-####
-
-#if [ ! -d $ACME_HOME/JLink_Linux_V502e_x86_64 ]
-#then
-#	echo "Please got to https://www.segger.com/jlink-software.html?step=1&file=JLinkLinuxDEB64_5.2.6"
-#	echo "and accept EULA to start download..."
-#	echo "you may also need to compile flashrom: make && sudo make install"
-#fi
 
