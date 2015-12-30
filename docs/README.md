@@ -6,8 +6,15 @@
 * source acme-setup
 * make
 
-## TODO ##
+## Build Targets ##
 
-* add u-boot build target
-* add creation for sdcard contents from scratch
+* u-boot	rebuild u-boot
+* kernel	rebuild kernel and modules
+* clean		clean kernel and u-boot
+* distclean	distclean, including buildroot
+* rootfs	untar buildroot image, build buildroot if necessary
+
+## SD Card ##
+
+TODO : add creation for sdcard contents from scratch
 
