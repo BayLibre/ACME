@@ -1,6 +1,7 @@
 patches/.applied
 .repo
 u-boot
+rootfs
 buildroot
 kbuild
 libsigrok

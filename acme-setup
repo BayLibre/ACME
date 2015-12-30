@@ -16,7 +16,7 @@ export CROSS_COMPILE=arm-linux-gnueabi-
 # buildroot output/image dir is exported and used as scratch
 # nfs rootfs.
 #
-export INSTALL_MOD_PATH=$ACME_HOME/buildroot/output/images
+export INSTALL_MOD_PATH=$ACME_HOME/rootfs
 
 if [ -f ~/.vimrc_ACME ]
 then

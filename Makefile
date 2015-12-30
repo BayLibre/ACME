@@ -9,8 +9,7 @@ ifndef KERNEL_BUILD
  $(error you need to source acme-setup, or define the matching variables)
 endif
 
-all: rootfs kernel sdcard
-
+all: rootfs kernel u-boot sdcard
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	@echo "applying patches"
@@ -18,14 +17,13 @@ patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	cp -rf patches/baylibre-acme buildroot/board
 	@date >> patches/.applied
 
-$(ACME_HOME)/buildroot/.config:	patches/.applied
-	@echo "preparing buildroot"
-	make -C $(ACME_HOME)/buildroot baylibre-acme_defconfig
-#	CONFIG_="BR2_" cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_TRACE_CMD"
-#	CONFIG_="BR2_" cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_LM_SENSORS"
+##
+# Kernel stuff
+##
 
 kernel: $(KERNEL_BUILD)/.config
 	make -j 5 -C $(KERNEL_BUILD) zImage modules dtbs
+	sudo chmod 777 $(INSTALL_MOD_PATH)/lib
 	make -C $(KERNEL_BUILD) modules_install
 	sudo cp $(KERNEL_BUILD)/arch/arm/boot/zImage $(TFTP_DIR)
 	sudo cp $(KERNEL_BUILD)/arch/arm/boot/dts/am335x-boneblack.dtb $(TFTP_DIR)/dtbs
@@ -37,7 +35,21 @@ $(KERNEL_BUILD)/.config: patches/.applied
 	mkdir -p $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) O=$(KERNEL_BUILD) acme_defconfig
 
-rootfs: $(ACME_HOME)/buildroot/.config
+##
+# BUILDROOT and ROOTFS
+##
+
+$(ACME_HOME)/buildroot/.config:	patches/.applied
+	@echo "preparing buildroot"
+	make -C $(ACME_HOME)/buildroot baylibre-acme_defconfig
+#	CONFIG_="BR2_" cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_TRACE_CMD"
+#	CONFIG_="BR2_" cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_LM_SENSORS"
+
+rootfs: $(ACME_HOME)/buildroot/output/images/rootfs.tar
+	mkdir -p $(INSTALL_MOD_PATH)
+	sudo tar xv -C $(INSTALL_MOD_PATH) -f $(ACME_HOME)/buildroot/output/images/rootfs.tar
+
+$(ACME_HOME)/buildroot/output/images/rootfs.tar: $(ACME_HOME)/buildroot/.config
 	make -C $(ACME_HOME)/buildroot -j 5
 
 ##
