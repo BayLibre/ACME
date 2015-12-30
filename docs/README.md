@@ -9,5 +9,5 @@
 ## TODO ##
 
 * add u-boot build target
-* add creation from sdcard contents from scratch
+* add creation for sdcard contents from scratch
 

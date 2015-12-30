@@ -18,7 +18,7 @@ export CROSS_COMPILE=arm-linux-gnueabi-
 #
 export INSTALL_MOD_PATH=$ACME_HOME/buildroot/output/images
 
-if [  -f cp ~/.vimrc_ACME ~/.vimrc  ]
+if [ -f ~/.vimrc_ACME ]
 then
 	echo "setting git ID and vim prefs."
 	cp ~/.gitconfig_BAYLIBRE ~/.gitconfig

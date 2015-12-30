@@ -1,6 +1,9 @@
 #
 # Copyright (c) 2015 BayLibre SAS
 #
+# Top level Makefile for the BayLibre ACME
+# Power Monitoring and Switching device
+#
 #
 ifndef KERNEL_BUILD
  $(error you need to source acme-setup, or define the matching variables)
@@ -34,19 +37,35 @@ $(KERNEL_BUILD)/.config: patches/.applied
 	mkdir -p $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) O=$(KERNEL_BUILD) acme_defconfig
 
+rootfs: $(ACME_HOME)/buildroot/.config
+	make -C $(ACME_HOME)/buildroot -j 5
+
+##
+# SDCARD and BOOTLOADER contents
+##
+
+sdcard: u-boot/MLO
+	@echo "todo sdcard"
+
+u-boot: u-boot/MLO u-boot/u-boot.bin
+
+u-boot/MLO: u-boot/.config
+	make -C u-boot ARCH=arm
+
+u-boot/.config: patches/.applied
+	make -C u-boot ARCH=arm am335x_evm_defconfig
+
+##
+# cleanup
+##
+
 distclean: clean
 	-@rm -f .patches
 	-@rm -rf $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) mrproper
 	make -C buildroot clean
+	make -C u-boot distclean
 
 clean:
 	-@make -C $(KERNEL_BUILD) clean
 	-@make -C u-boot clean
-
-rootfs: $(ACME_HOME)/buildroot/.config
-	make -C $(ACME_HOME)/buildroot -j 5
-
-sdcard:
-	@echo "todo sdcard"
-
