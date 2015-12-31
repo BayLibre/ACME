@@ -1,4 +1,5 @@
 patches/.applied
+sdcard/uenv/uEnv-nfs.txt
 .repo
 u-boot
 rootfs

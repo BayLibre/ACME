@@ -1,9 +1,13 @@
 #!/bin/bash
 
+export SERVERIP=`hostname -I`
+export BOARDIP=192.168.1.69
+
 export TOPLEVEL=$HOME
 
 export ACME_HOME=$TOPLEVEL/ACME
 export KERNEL_BUILD=$ACME_HOME/kbuild
+export UBOOT_BUILD=$ACME_HOME/u-boot
 export ACME_PATCHES=$ACME_HOME/patches
 export KERNEL_SRC=$ACME_HOME/linux
 export TFTP_DIR=/var/lib/tftpboot
