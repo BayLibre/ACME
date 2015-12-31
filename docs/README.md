@@ -10,8 +10,12 @@ If not already done, please install repo and pull the manifests as per
 
 ### Getting started ###
 
-* Review environment variables and path in setup script `acme-setup`
+* Review environment variables and path in setup script `acme-setup`.
+  Check the top-level path, and make sure INSTALL_MOD_PATH is exported
+  if you wish to use NFS.
+
 * source acme-setup
+
 * make
 
 ## Build Targets ##
