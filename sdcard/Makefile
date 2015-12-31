@@ -21,8 +21,8 @@ all: reset fix-nfs
 	sudo mkfs.ext4 ${ACME_SDCARD}1 -L rootfs
 	# mount and mkdirs
 	sudo mount ${ACME_SDCARD}1 ${TEMPDIR}
-	mkdir -p ${TEMPDIR}/opt/backup/uboot/
-	mkdir -p ${TEMPDIR}/boot/dtbs
+	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
+	sudo mkdir -p ${TEMPDIR}/boot/dtbs
 	# create backup bootloader
 	sudo cp -v ${UBOOT_BUILD}/MLO ${TEMPDIR}/opt/backup/uboot/
 	sudo cp -v ${UBOOT_BUILD}/u-boot.img ${TEMPDIR}/opt/backup/uboot/
@@ -36,16 +36,17 @@ all: reset fix-nfs
 	sudo cp -v  ./uenv/uEnv-nfs.txt ${TEMPDIR}
 	sync
 	sync
+	sudo umount ${ACME_SDCARD}1
+	sudo umount ${TEMPDIR}
 
 fix-nfs:
 	cat ./uenv/uEnv-nfs.tmpl | sed 's#INSTALL_MOD_PATH#'"${INSTALL_MOD_PATH}"'#' >  ./uenv/uEnv-nfs.txt
 	sed 's#SERVERIP#'"${SERVERIP}"'#' -i  ./uenv/uEnv-nfs.txt
 	sed 's#BOARDIP#'"${BOARDIP}"'#' -i  ./uenv/uEnv-nfs.txt
 
-
 reset:
+	./check-acme-disk
 	-sudo umount ${ACME_SDCARD}1
-	-sudo umount ${TEMPDIR}
 	sudo dd if=/dev/zero of=${ACME_SDCARD} bs=1M count=10
 
 help:

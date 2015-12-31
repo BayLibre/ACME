@@ -1,0 +1,17 @@
+#!/bin/bash
+
+if [ -z "$ACME_SDCARD" ]
+then
+	echo ACME_SDCARD not set
+	exit -2
+fi
+
+size=$(df -k $ACME_SDCARD | tail -1 | awk '{print $2}')
+
+if [ "$size" -gt "170000000" ]
+then
+        echo $ACME_SDCARD "has suspiscious size of" $size "bytes"
+	echo "refusing to process"
+        exit -1
+fi
+
