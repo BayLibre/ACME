@@ -11,7 +11,7 @@ endif
 
 .PHONY: sdcard
 
-all: kernel u-boot
+all: kernel u-boot rootfs
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	@echo "applying patches"
