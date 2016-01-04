@@ -50,7 +50,7 @@ $(ACME_HOME)/buildroot/.config:	patches/.applied
 #	CONFIG_="BR2_" cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_TRACE_CMD"
 #	CONFIG_="BR2_" cd $ACME_HOME/buildroot && kconfig-tweak --enable PACKAGE_LM_SENSORS"
 
-rootfs: $(INSTALL_MOD_PATH)/.rootfs
+rootfs: $(INSTALL_MOD_PATH)/.rootfs fix-nfs
 
 $(INSTALL_MOD_PATH)/.rootfs: $(ACME_HOME)/buildroot/output/images/rootfs.tar
 	@mkdir -p $(INSTALL_MOD_PATH)
@@ -60,6 +60,11 @@ $(INSTALL_MOD_PATH)/.rootfs: $(ACME_HOME)/buildroot/output/images/rootfs.tar
 
 $(ACME_HOME)/buildroot/output/images/rootfs.tar: $(ACME_HOME)/buildroot/.config
 	make -C $(ACME_HOME)/buildroot -j 5
+
+fix-nfs: $(INSTALL_MOD_PATH)/.rootfs
+	cat sdcard/uenv/uEnv-nfs.tmpl | sed 's#INSTALL_MOD_PATH#'"${INSTALL_MOD_PATH}"'#' >  sdcard/uenv/uEnv-nfs.txt
+	sed 's#SERVERIP#'"${SERVERIP}"'#' -i  sdcard/uenv/uEnv-nfs.txt
+	sed 's#BOARDIP#'"${BOARDIP}"'#' -i  sdcard/uenv/uEnv-nfs.txt
 
 ##
 # SDCARD and BOOTLOADER contents
