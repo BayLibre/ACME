@@ -45,7 +45,7 @@ reset:
 	sudo dd if=/dev/zero of=${ACME_SDCARD} bs=1M count=10
 
 help:
-	lsblk
+	lsblk | grep disk -A 2
 	@echo "export ACME_SDCARD according to dmesg, ex: /dev/sde"
 
 
