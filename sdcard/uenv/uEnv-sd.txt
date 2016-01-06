@@ -4,6 +4,7 @@
 
 hostname=baylibre-acme
 device=eth0
+autoconf=on
 
 loadaddr=0x82000000
 fdtaddr=0x88000000
@@ -20,7 +21,7 @@ loadxfdt=load mmc 0:1 ${fdtaddr} /boot/dtbs/${fdtfile}
 loaduEnvtxt=load mmc 0:1 ${loadaddr} /boot/uEnv.txt ; env import -t ${loadaddr} ${filesize};
 loadall=run loaduEnvtxt; run loadximage; run loadxfdt;
 
-mmcargs=setenv bootargs console=tty0 console=${console} ${optargs} ${cape_disable} ${cape_enable} root=${mmcroot} rootfstype=${mmcrootfstype} ${cmdline}
+mmcargs=setenv bootargs console=tty0 ip=dhcp console=${console} ${optargs} ${cape_disable} ${cape_enable} root=${mmcroot} rootfstype=${mmcrootfstype} ${cmdline}
 
 uenvcmd=run loadall; run mmcargs; bootz ${loadaddr} - ${fdtaddr};
 

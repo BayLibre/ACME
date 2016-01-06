@@ -15,14 +15,18 @@ all: kernel u-boot rootfs
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	@echo "applying patches"
+ifdef ACME_IIO
+	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s iio_S95acme-init S95acme-init
+else
+	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s hwmon_S95acme-init S95acme-init
+endif
+	touch patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
+	-sudo cat /home/root/.ssh/id_rsa.pub >> patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
+	-sudo cat /home/powerci/.ssh/id_rsa.pub >> patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
+	-sudo cat /home/marc/.ssh/id_rsa.pub >> patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
 	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
 	cp -rf patches/baylibre-acme buildroot/board
-ifdef ACME_IIO
-	cd buildroot/board/fs-overlay/etc/init.d && ln -s iio_S95acme-init S95acme-init
-else
-	cd buildroot/board/fs-overlay/etc/init.d && ln -s hwmon_S95acme-init S95acme-init
-endif
-	cd buildroot/board/fs-overlay/etc/init.d && chmod +x S95acme-init
+	sudo chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
 	@date > patches/.applied
 
 ##
@@ -64,7 +68,13 @@ else
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
 endif
 
-rootfs: $(INSTALL_MOD_PATH)/.rootfs fix-nfs
+# create rootfs.tar.xz
+#
+
+rootfs: rootfs.tar.xz fix-nfs
+
+rootfs.tar.xz: $(INSTALL_MOD_PATH)/.rootfs
+	xz -kc $(ACME_HOME)/buildroot/output/images/rootfs.tar > rootfs.tar.xz
 
 $(INSTALL_MOD_PATH)/.rootfs: $(ACME_HOME)/buildroot/output/images/rootfs.tar
 	@mkdir -p $(INSTALL_MOD_PATH)
