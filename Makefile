@@ -70,6 +70,8 @@ endif
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
+	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBDAEMON
+	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_EXPAT
 
 
 # create rootfs.tar.xz
