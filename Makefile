@@ -69,6 +69,7 @@ else
 endif
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
+	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
 
 
 # create rootfs.tar.xz
@@ -114,11 +115,12 @@ u-boot/.config: patches/.applied
 ##
 
 distclean: clean
-	-@rm -f .patches
+	-@rm -f patches/.applied
 	-@rm -rf $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) mrproper
 	make -C buildroot clean
 	make -C u-boot distclean
+	sudo rm -rf rootfs rootfs.tar.xz
 	echo "" > .log
 
 clean:
