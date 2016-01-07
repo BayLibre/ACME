@@ -68,6 +68,8 @@ else
 	echo "buildroot: added sensors/hwmon packages" > .log
 endif
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
+	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
+
 
 # create rootfs.tar.xz
 #
