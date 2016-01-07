@@ -12,6 +12,7 @@ endif
 .PHONY: sdcard
 
 all: kernel u-boot rootfs
+	-@cat .log
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	@echo "applying patches"
@@ -21,14 +22,11 @@ else
 	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s hwmon_S95acme-init S95acme-init
 endif
 	touch patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
-	-sudo cat /home/root/.ssh/id_rsa.pub >> patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
-	-sudo cat /home/powerci/.ssh/id_rsa.pub >> patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
-	-sudo cat /home/marc/.ssh/id_rsa.pub >> patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
 	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
 	cp -rf patches/baylibre-acme buildroot/board
 	sudo chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
 	@date > patches/.applied
-
+	echo "rootfs: you may want to add some id_rsa.pub keys to rootfs/root/.ssh/authorized_keys" > .log
 ##
 # Kernel stuff
 ##
@@ -48,6 +46,7 @@ menuconfig: $(KERNEL_BUILD)/.config
 ifdef ACME_IIO
 	cd $(ACME_HOME)/kbuild && kconfig-tweak --module IIO
 	cd $(ACME_HOME)/kbuild && kconfig-tweak --module INA2XX_ADC
+	echo "kernel: configured for INA2XX_ADC (IIO)" >> .log
 endif
 
 $(KERNEL_BUILD)/.config: patches/.applied
@@ -63,10 +62,12 @@ $(ACME_HOME)/buildroot/.config:	patches/.applied
 ifdef ACME_IIO
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO_IIOD
+	echo "buildroot: added IIO packages" > .log
 else
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LM_SENSORS
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
+	echo "buildroot: added sensors/hwmon packages" > .log
 endif
+	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
 
 # create rootfs.tar.xz
 #
@@ -96,6 +97,7 @@ fix-nfs: $(INSTALL_MOD_PATH)/.rootfs
 
 sdcard: u-boot/MLO $(INSTALL_MOD_PATH)/.rootfs $(KERNEL_BUILD)/arch/arm/boot/zImage
 	@make -C sdcard all
+	-@cat .log
 
 u-boot: u-boot/MLO u-boot/u-boot.bin
 
@@ -115,6 +117,7 @@ distclean: clean
 	make -C $(KERNEL_SRC) mrproper
 	make -C buildroot clean
 	make -C u-boot distclean
+	echo "" > .log
 
 clean:
 	-@make -C $(KERNEL_BUILD) clean
