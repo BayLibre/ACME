@@ -37,7 +37,7 @@ all: reset
 	sudo cp -v  ./uenv/uEnv-nfs.txt ${TEMPDIR}
 	sync
 	sync
-	sudo umount ${ACME_SDCARD}1
+	sudo eject ${ACME_SDCARD}
 
 reset:
 	./check-acme-disk
