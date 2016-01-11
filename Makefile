@@ -5,9 +5,12 @@
 # Power Monitoring and Switching device
 #
 #
-ifndef KERNEL_BUILD
+ifndef ACME_HOME
  $(error you need to source acme-setup, or define the matching variables)
 endif
+
+UBOOT_BUILD=$(ACME_HOME)/build/u-boot
+KERNEL_BUILD=$(ACME_HOME)/build/linux
 
 .PHONY: sdcard
 
@@ -104,13 +107,18 @@ sdcard: u-boot/MLO $(INSTALL_MOD_PATH)/.rootfs $(KERNEL_BUILD)/arch/arm/boot/zIm
 	@make -C sdcard all
 	-@cat .log
 
-u-boot: u-boot/MLO u-boot/u-boot.bin
+##
+# U_BOOT
+##
 
-u-boot/MLO: u-boot/.config
-	make -C u-boot ARCH=arm
+u-boot: $(UBOOT_BUILD)/MLO $(UBOOT_BUILD)/u-boot.bin
 
-u-boot/.config: patches/.applied
-	make -C u-boot ARCH=arm am335x_evm_defconfig
+$(UBOOT_BUILD)/MLO: $(UBOOT_BUILD)/.config
+	@mkdir -p $(KERNEL_BUILD)
+	make -C $(UBOOT_BUILD) ARCH=arm -j4
+
+$(UBOOT_BUILD)/.config: patches/.applied
+	make -C $(UBOOT_SRC) O=$(UBOOT_BUILD) ARCH=arm am335x_evm_defconfig
 
 ##
 # cleanup
@@ -121,13 +129,13 @@ distclean: clean
 	-@rm -rf $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) mrproper
 	make -C buildroot clean
-	make -C u-boot distclean
+	make -C u-boot mrproper
 	sudo rm -rf rootfs rootfs.tar.xz
 	echo "" > .log
 
 clean:
 	-@make -C $(KERNEL_BUILD) clean
-	-@make -C u-boot clean
+	-@rm -rf $(UBOOT_BUILD)
 	-@sudo rm $(ACME_HOME)/buildroot/output/images/rootfs.tar
 	-@rm $(INSTALL_MOD_PATH)/.rootfs
 
