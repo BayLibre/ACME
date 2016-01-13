@@ -24,6 +24,7 @@ ifdef ACME_IIO
 else
 	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s hwmon_S95acme-init S95acme-init
 endif
+	@mkdir -p patches/baylibre-acme/fs-overlay/root/.ssh/
 	touch patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
 	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
 	cp -rf patches/baylibre-acme buildroot/board
