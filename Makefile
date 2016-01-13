@@ -46,7 +46,7 @@ kernel: $(KERNEL_BUILD)/.config
 	sudo cp $(KERNEL_BUILD)/arch/arm/boot/dts/am335x-boneblack.dtb $(TFTP_DIR)/dtbs
 
 menuconfig: $(KERNEL_BUILD)/.config
-	ARCH=arm make -C kbuild menuconfig
+	ARCH=arm make -C $(KERNEL_BUILD) menuconfig
 ifdef ACME_IIO
 	cd $(ACME_HOME)/kbuild && kconfig-tweak --module IIO
 	cd $(ACME_HOME)/kbuild && kconfig-tweak --module INA2XX_ADC
@@ -71,6 +71,7 @@ else
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LM_SENSORS
 	echo "buildroot: added sensors/hwmon packages" > .log
 endif
+	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable TARGET_ROOTFS_TAR
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
 	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
@@ -115,7 +116,7 @@ sdcard: u-boot/MLO $(INSTALL_MOD_PATH)/.rootfs $(KERNEL_BUILD)/arch/arm/boot/zIm
 u-boot: $(UBOOT_BUILD)/MLO $(UBOOT_BUILD)/u-boot.bin
 
 $(UBOOT_BUILD)/MLO: $(UBOOT_BUILD)/.config
-	@mkdir -p $(KERNEL_BUILD)
+	@mkdir -p $(UBOOT_BUILD)
 	make -C $(UBOOT_BUILD) ARCH=arm -j4
 
 $(UBOOT_BUILD)/.config: patches/.applied
