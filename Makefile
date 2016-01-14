@@ -42,6 +42,7 @@ kernel: $(KERNEL_BUILD)/.config
 	mkdir -p $(INSTALL_MOD_PATH)/lib
 	@sudo chmod 777 $(INSTALL_MOD_PATH)/lib
 	make -C $(KERNEL_BUILD) modules_install
+	sudo mkdir -p $(TFTP_DIR)/dtbs
 	sudo cp $(KERNEL_BUILD)/arch/arm/boot/zImage $(TFTP_DIR)
 	sudo cp $(KERNEL_BUILD)/arch/arm/boot/dts/am335x-boneblack.dtb $(TFTP_DIR)/dtbs
 
