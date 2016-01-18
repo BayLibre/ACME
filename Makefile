@@ -9,8 +9,8 @@ ifndef ACME_HOME
  $(error you need to source acme-setup, or define the matching variables)
 endif
 
-UBOOT_BUILD=$(ACME_HOME)/build/u-boot
-KERNEL_BUILD=$(ACME_HOME)/build/linux
+export UBOOT_BUILD=$(ACME_HOME)/build/u-boot
+export KERNEL_BUILD=$(ACME_HOME)/build/linux
 
 .PHONY: sdcard
 
@@ -19,14 +19,17 @@ all: kernel u-boot rootfs
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	@echo "applying patches"
+	@rm -f patches/baylibre-acme/fs-overlay/etc/init.d/S95acme-init
+	@mkdir -p patches/baylibre-acme/fs-overlay/root/.ssh/
+	@touch patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
 ifdef ACME_IIO
 	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s iio_S95acme-init S95acme-init
 else
 	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s hwmon_S95acme-init S95acme-init
 endif
-	@mkdir -p patches/baylibre-acme/fs-overlay/root/.ssh/
-	touch patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
+	# Final copy and permission settings
 	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
+
 	cp -rf patches/baylibre-acme buildroot/board
 	sudo chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
 	@date > patches/.applied
@@ -35,9 +38,9 @@ endif
 # Kernel stuff
 ##
 
-$(KERNEL_BUILD)/arch/arm/boot/zImage: kernel
+kernel:	$(KERNEL_BUILD)/arch/arm/boot/zImage
 
-kernel: $(KERNEL_BUILD)/.config
+$(KERNEL_BUILD)/arch/arm/boot/zImage: $(KERNEL_BUILD)/.config
 	make -j 5 -C $(KERNEL_BUILD) zImage modules dtbs
 	mkdir -p $(INSTALL_MOD_PATH)/lib
 	@sudo chmod 777 $(INSTALL_MOD_PATH)/lib
@@ -106,7 +109,7 @@ fix-nfs: $(INSTALL_MOD_PATH)/.rootfs
 # SDCARD and BOOTLOADER contents
 ##
 
-sdcard: u-boot/MLO $(INSTALL_MOD_PATH)/.rootfs $(KERNEL_BUILD)/arch/arm/boot/zImage
+sdcard: $(UBOOT_BUILD)/MLO $(INSTALL_MOD_PATH)/.rootfs $(KERNEL_BUILD)/arch/arm/boot/zImage
 	@make -C sdcard all
 	-@cat .log
 

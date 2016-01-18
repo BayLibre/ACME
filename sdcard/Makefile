@@ -8,6 +8,9 @@
 ifndef ACME_SDCARD
  $(error you need to CAREFULLY define ACME_SDCARD, lsblk is helpful to do so.)
 endif
+ifndef UBOOT_BUILD
+ $(error UBOOT_BUILD undefined)
+endif
 
 TEMPDIR=/tmp/acme-tmp-rootfs
 
