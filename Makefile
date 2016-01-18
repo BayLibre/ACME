@@ -51,15 +51,16 @@ $(KERNEL_BUILD)/arch/arm/boot/zImage: $(KERNEL_BUILD)/.config
 
 menuconfig: $(KERNEL_BUILD)/.config
 	ARCH=arm make -C $(KERNEL_BUILD) menuconfig
-ifdef ACME_IIO
-	cd $(ACME_HOME)/kbuild && kconfig-tweak --module IIO
-	cd $(ACME_HOME)/kbuild && kconfig-tweak --module INA2XX_ADC
-	echo "kernel: configured for INA2XX_ADC (IIO)" >> .log
-endif
 
 $(KERNEL_BUILD)/.config: patches/.applied
 	@mkdir -p $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) O=$(KERNEL_BUILD) acme_defconfig
+ifdef ACME_IIO
+	cd $(KERNEL_BUILD) && kconfig-tweak --disable SENSORS_INA2XX
+	cd $(KERNEL_BUILD) && kconfig-tweak --module IIO
+	cd $(KERNEL_BUILD) && kconfig-tweak --module INA2XX_ADC
+	echo "kernel: configured for INA2XX_ADC (IIO)" >> .log
+endif
 
 ##
 # BUILDROOT and ROOTFS
@@ -140,7 +141,7 @@ distclean: clean
 	echo "" > .log
 
 clean:
-	-@make -C $(KERNEL_BUILD) clean
+	-@rm -rf $(KERNEL_BUILD)
 	-@rm -rf $(UBOOT_BUILD)
 	-@sudo rm $(ACME_HOME)/buildroot/output/images/rootfs.tar
 	-@rm $(INSTALL_MOD_PATH)/.rootfs
