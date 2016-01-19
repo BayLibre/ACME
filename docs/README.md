@@ -59,3 +59,12 @@ to being used. Use dmesg or lsblk to check/findout.
 
 		marc@marc-ThinkPad-L540:~$ ACME_SDCARD=/dev/sdd make sdcard
 ```
+
+### IIO Support ###
+
+By default, HWMON support is enabled, you can build an IIO version of the product by defining
+ACME_IIO from the acme-setup script.
+
+The following optional command line tool will allow for simple recording of power metrics: <https://github.com/BayLibre/iio-capture>
+
+
