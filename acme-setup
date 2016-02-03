@@ -3,9 +3,9 @@
 export SERVERIP=`hostname -I`
 export BOARDIP=192.168.1.69
 
-export TOPLEVEL=$HOME
+export TOPLEVEL=`pwd`
 
-export ACME_HOME=$TOPLEVEL/ACME
+export ACME_HOME=$TOPLEVEL
 
 export ACME_PATCHES=$ACME_HOME/patches
 export KERNEL_SRC=$ACME_HOME/linux
