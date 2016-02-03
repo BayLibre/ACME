@@ -14,7 +14,8 @@ export UBOOT_SRC=$ACME_HOME/u-boot
 export TFTP_DIR=/var/lib/tftpboot
 
 export ARCH=arm
-export CROSS_COMPILE=arm-linux-gnueabi-
+#export CROSS_COMPILE=arm-linux-gnueabi-
+export CROSS_COMPILE=arm-linux-gnueabihf-
 
 # Uncomment to experiment with IIO
 #

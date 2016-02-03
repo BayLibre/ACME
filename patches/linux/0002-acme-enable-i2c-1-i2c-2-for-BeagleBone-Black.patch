@@ -1,19 +1,19 @@
-From 654283e2b39e43a15f8bda1a912915f89210a6b4 Mon Sep 17 00:00:00 2001
+From 644b41d7af63de2d2aa3e93efd81fbba059dfb40 Mon Sep 17 00:00:00 2001
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Date: Mon, 25 May 2015 16:49:34 +0200
 Subject: [PATCH 2/3] acme: enable i2c-1 & i2c-2 for BeagleBone Black
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- arch/arm/boot/dts/am335x-boneblack.dts | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ arch/arm/boot/dts/am335x-boneblack.dts |   32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
 diff --git a/arch/arm/boot/dts/am335x-boneblack.dts b/arch/arm/boot/dts/am335x-boneblack.dts
-index eadbba3..48a3b72 100644
+index 55c0e95..1825a0e 100644
 --- a/arch/arm/boot/dts/am335x-boneblack.dts
 +++ b/arch/arm/boot/dts/am335x-boneblack.dts
-@@ -64,6 +64,36 @@
- 			0x1b0 0x03      /* xdma_event_intr0, OMAP_MUX_MODE3 | AM33XX_PIN_OUTPUT */
+@@ -64,6 +64,20 @@
+ 			AM33XX_IOPAD(0x9b0, PIN_OUTPUT_PULLDOWN | MUX_MODE3)	/* xdma_event_intr0 */
  		>;
  	};
 +
@@ -30,7 +30,13 @@ index eadbba3..48a3b72 100644
 +			0x17c (PIN_INPUT_PULLUP | MUX_MODE3)
 +		>;
 +	};
-+};
+ };
+ 
+ &lcdc {
+@@ -91,6 +105,24 @@
+ 	};
+ };
+ 
 +
 +&i2c1 {
 +	pinctrl-names = "default";
@@ -46,9 +52,12 @@ index eadbba3..48a3b72 100644
 +
 +	status = "okay";
 +	clock-frequency = <400000>;
++};
++
++
+ &rtc {
+ 	system-power-controller;
  };
- 
- &lcdc {
 -- 
-2.5.0
+1.7.9.5
 

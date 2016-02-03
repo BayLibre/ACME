@@ -1,4 +1,4 @@
-From 8567f0f82b3957aae746422fd9ab0b8a2912d393 Mon Sep 17 00:00:00 2001
+From fbed90da67f87fe4799096e373e16f665f829ced Mon Sep 17 00:00:00 2001
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Date: Mon, 25 May 2015 16:44:31 +0200
 Subject: [PATCH 1/3] acme: add acme_defconfig
@@ -3782,5 +3782,5 @@ index 0000000..2eb9068
 +CONFIG_ARCH_HAS_SG_CHAIN=y
 +# CONFIG_VIRTUALIZATION is not set
 -- 
-2.5.0
+1.7.9.5
 

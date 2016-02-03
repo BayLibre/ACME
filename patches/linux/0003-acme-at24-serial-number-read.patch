@@ -1,4 +1,4 @@
-From 16caa75091115bb64ebe5f18bd79af4a0aa9e496 Mon Sep 17 00:00:00 2001
+From 2535895039c4d1aba918ec4a9f629256f5ca223e Mon Sep 17 00:00:00 2001
 From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Date: Thu, 19 Nov 2015 15:05:52 +0100
 Subject: [PATCH 3/3] acme: at24: serial number read
@@ -9,8 +9,8 @@ series.
 
 Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/misc/eeprom/at24.c         | 187 +++++++++++++++++++++++++++++++------
- include/linux/platform_data/at24.h |   9 +-
+ drivers/misc/eeprom/at24.c         |  187 +++++++++++++++++++++++++++++++-----
+ include/linux/platform_data/at24.h |    9 +-
  2 files changed, 166 insertions(+), 30 deletions(-)
 
 diff --git a/drivers/misc/eeprom/at24.c b/drivers/misc/eeprom/at24.c
@@ -301,5 +301,5 @@ index c42aa89..5686f91 100644
  	void		(*setup)(struct memory_accessor *, void *context);
  	void		*context;
 -- 
-2.5.0
+1.7.9.5
 

@@ -31,11 +31,11 @@ endif
 	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
 
 	cp -rf patches/baylibre-acme buildroot/board
-	sudo chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
+	fakeroot chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
 	@date > patches/.applied
 	echo "rootfs: you may want to add some id_rsa.pub keys to rootfs/root/.ssh/authorized_keys" > .log
         # Kernel patches
-	cd $(KERNEL_SRC) && git am --reject -3 patches/linux/*.patch
+	cd $(KERNEL_SRC) && git am --reject -3 $(ACME_HOME)/patches/linux/*.patch
 ##
 # Kernel stuff
 ##
@@ -45,11 +45,11 @@ kernel:	$(KERNEL_BUILD)/arch/arm/boot/zImage
 $(KERNEL_BUILD)/arch/arm/boot/zImage: $(KERNEL_BUILD)/.config
 	make -j 5 -C $(KERNEL_BUILD) zImage modules dtbs
 	mkdir -p $(INSTALL_MOD_PATH)/lib
-	@sudo chmod 777 $(INSTALL_MOD_PATH)/lib
+	@fakeroot chmod 777 $(INSTALL_MOD_PATH)/lib
 	make -C $(KERNEL_BUILD) modules_install
-	sudo mkdir -p $(TFTP_DIR)/dtbs
-	sudo cp $(KERNEL_BUILD)/arch/arm/boot/zImage $(TFTP_DIR)
-	sudo cp $(KERNEL_BUILD)/arch/arm/boot/dts/am335x-boneblack.dtb $(TFTP_DIR)/dtbs
+	fakeroot mkdir -p $(TFTP_DIR)/dtbs
+	fakeroot cp $(KERNEL_BUILD)/arch/arm/boot/zImage $(TFTP_DIR)
+	fakeroot cp $(KERNEL_BUILD)/arch/arm/boot/dts/am335x-boneblack.dtb $(TFTP_DIR)/dtbs
 
 menuconfig: $(KERNEL_BUILD)/.config
 	ARCH=arm make -C $(KERNEL_BUILD) menuconfig
@@ -96,8 +96,8 @@ rootfs.tar.xz: $(INSTALL_MOD_PATH)/.rootfs
 
 $(INSTALL_MOD_PATH)/.rootfs: $(ACME_HOME)/buildroot/output/images/rootfs.tar
 	@mkdir -p $(INSTALL_MOD_PATH)
-	sudo tar xv -C $(INSTALL_MOD_PATH) -f $(ACME_HOME)/buildroot/output/images/rootfs.tar
-	sudo chown ${USER}:${USER} rootfs
+	fakeroot tar xv -C $(INSTALL_MOD_PATH) -f $(ACME_HOME)/buildroot/output/images/rootfs.tar
+	fakeroot chown ${USER}:${USER} rootfs
 	@date > $(INSTALL_MOD_PATH)/.rootfs
 
 $(ACME_HOME)/buildroot/output/images/rootfs.tar: $(ACME_HOME)/buildroot/.config
@@ -139,13 +139,13 @@ distclean: clean
 	make -C $(KERNEL_SRC) mrproper
 	make -C buildroot clean
 	make -C u-boot mrproper
-	sudo rm -rf rootfs rootfs.tar.xz
+	fakeroot rm -rf rootfs rootfs.tar.xz
 	echo "" > .log
 
 clean:
 	-@rm -rf $(KERNEL_BUILD)
 	-@rm -rf $(UBOOT_BUILD)
-	-@sudo rm $(ACME_HOME)/buildroot/output/images/rootfs.tar
+	-@fakeroot rm $(ACME_HOME)/buildroot/output/images/rootfs.tar
 	-@rm $(INSTALL_MOD_PATH)/.rootfs
 
 
