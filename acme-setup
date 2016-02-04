@@ -3,6 +3,9 @@
 export SERVERIP=`hostname -I`
 export BOARDIP=192.168.1.69
 
+# Uncomment when using a build server # 
+export USE_BUILD_SERVER=build.baylibre.com
+
 export TOPLEVEL=`pwd`
 
 export ACME_HOME=$TOPLEVEL

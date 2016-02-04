@@ -47,9 +47,11 @@ $(KERNEL_BUILD)/arch/arm/boot/zImage: $(KERNEL_BUILD)/.config
 	mkdir -p $(INSTALL_MOD_PATH)/lib
 	@fakeroot chmod 777 $(INSTALL_MOD_PATH)/lib
 	make -C $(KERNEL_BUILD) modules_install
+ifndef USE_BUILD_SERVER
 	fakeroot mkdir -p $(TFTP_DIR)/dtbs
 	fakeroot cp $(KERNEL_BUILD)/arch/arm/boot/zImage $(TFTP_DIR)
 	fakeroot cp $(KERNEL_BUILD)/arch/arm/boot/dts/am335x-boneblack.dtb $(TFTP_DIR)/dtbs
+endif
 
 menuconfig: $(KERNEL_BUILD)/.config
 	ARCH=arm make -C $(KERNEL_BUILD) menuconfig
