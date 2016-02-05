@@ -3,8 +3,11 @@
 export SERVERIP=`hostname -I`
 export BOARDIP=192.168.1.69
 
-# Uncomment when using a build server # 
-export USE_BUILD_SERVER=build.baylibre.com
+# Uncomment when using a build server #
+#export USE_BUILD_SERVER=build.baylibre.com
+#export CROSS_COMPILE=arm-linux-gnueabihf-
+
+export CROSS_COMPILE=arm-linux-gnueabi-
 
 export TOPLEVEL=`pwd`
 
@@ -17,8 +20,6 @@ export UBOOT_SRC=$ACME_HOME/u-boot
 export TFTP_DIR=/var/lib/tftpboot
 
 export ARCH=arm
-#export CROSS_COMPILE=arm-linux-gnueabi-
-export CROSS_COMPILE=arm-linux-gnueabihf-
 
 # Uncomment to experiment with IIO
 #
