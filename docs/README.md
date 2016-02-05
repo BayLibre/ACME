@@ -67,4 +67,23 @@ ACME_IIO from the acme-setup script.
 
 The following optional command line tool will allow for simple recording of power metrics: <https://github.com/BayLibre/iio-capture>
 
+## ACME PowerProbes EEPROM Tips ##
 
+Manually checking the eeprom contents
+
+* Check present I2C devices on bus 1:	i2cdetect -y -r 1 (look for the UU devices)
+* For e.g. address 52 (eeprom of 3rd probe = 0x50 + 2) got ot /sys/class/i2c-dev/i2c-1/device/1-0052
+* Data dump the contents of the eeprom: dd if=eeprom bs=64 count=1 | hexdump -C -v
+
+The layout of the eeprom data is as such:
+
+```
+struct probe_eeprom {
+	uint32_t type;  /* 1/2/3 for USB/JACK/HE10 */
+	uint32_t rev;	/* 42 for 'B' */
+	uint32_t shunt; /* RShunt value in uOhm 00013880h = 80000d*/
+	uint8_t pwr_sw; /* 1 for has powerswitch*/
+	uint8_t serial[EEPROM_SERIAL_SIZE];
+	int8_t tag[EEPROM_TAG_SIZE];
+};
+```
