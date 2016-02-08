@@ -29,7 +29,7 @@ else
 endif
 	# Final copy and permission settings
 	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
-
+	cp -rf patches/package/* buildroot/package
 	cp -rf patches/baylibre-acme buildroot/board
 	fakeroot chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
 	@date > patches/.applied

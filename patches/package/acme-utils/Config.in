@@ -1,0 +1,4 @@
+config BR2_PACKAGE_ACME_UTILS
+	bool "acme-utils"
+	help
+	  Utility software for BayLibre ACME, command-line API.
