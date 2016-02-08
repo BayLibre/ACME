@@ -3,9 +3,8 @@
 # BayLibre ACME Utilities
 #
 ################################################################################
-
-ACME_UTILS_VERSION = 1.0
-ACME_UTILS_SITE = $(BR2_GNU_MIRROR)/ed
+ACME_UTILS_VERSION = master
+ACME_UTILS_SITE = $(call github,baylibre,acme-utils,$(ACME_UTILS_VERSION))
 ACME_UTILS_CONF_OPTS = \
 	CC="$(TARGET_CC)" CFLAGS="$(TARGET_CFLAGS)" \
 	LDFLAGS="$(TARGET_LDFLAGS)"

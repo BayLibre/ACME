@@ -24,11 +24,12 @@ patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
 	@touch patches/baylibre-acme/fs-overlay/root/.ssh/authorized_keys
 ifdef ACME_IIO
 	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s iio_S95acme-init S95acme-init
+	cp patches/baylibre-acme_defconfig.iio buildroot/configs/baylibre-acme_defconfig
 else
 	-cd patches/baylibre-acme/fs-overlay/etc/init.d && ln -s hwmon_S95acme-init S95acme-init
+	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
 endif
 	# Final copy and permission settings
-	cp patches/baylibre-acme_defconfig buildroot/configs/baylibre-acme_defconfig
 	cp -rf patches/package/* buildroot/package
 	cp -rf patches/baylibre-acme buildroot/board
 	fakeroot chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
