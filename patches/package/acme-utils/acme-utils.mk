@@ -11,16 +11,12 @@ ACME_UTILS_CONF_OPTS = \
 ACME_UTILS_LICENSE = GPLv3+
 ACME_UTILS_LICENSE_FILES = COPYING
 
-#define ACME_UTILS_CONFIGURE_CMDS
-#	(cd $(@D); \
-#		./configure \
-#		--prefix=/usr \
-#		$(TARGET_CONFIGURE_OPTS) \
-#	)
-#endef
-
 define ACME_UTILS_BUILD_CMDS
-	$(MAKE)	-C $(@D)/api
+	$(MAKE)	-C $(@D)/api $(ACME_UTILS_CONF_OPTS)
+endef
+
+define ACME_UTILS_CLEAN_CMDS
+	$(MAKE) -C $(@D)/api clean
 endef
 
 define ACME_UTILS_INSTALL_TARGET_CMDS

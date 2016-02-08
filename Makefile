@@ -33,7 +33,7 @@ endif
 	cp -rf patches/package/* buildroot/package
 	cp -rf patches/baylibre-acme buildroot/board
 	fakeroot chmod +x buildroot/board/baylibre-acme/fs-overlay/etc/init.d/*
-	cd buildroot && patch -p1 < ../patches/buildroot_add_acme_package.patch
+	-cd buildroot && patch -p1 < ../patches/buildroot_add_acme_package.patch
 	@date > patches/.applied
 	echo "rootfs: you may want to add some id_rsa.pub keys to rootfs/root/.ssh/authorized_keys" > .log
         # Kernel patches
