@@ -1,0 +1,14 @@
+diff --git a/package/Config.in b/package/Config.in
+index 529ad33..4f03064 100644
+--- a/package/Config.in
++++ b/package/Config.in
+@@ -325,6 +325,9 @@ comment "X window managers"
+ endmenu
+ 
+ menu "Hardware handling"
++menu "BayLibre ACME tools"
++	source "package/acme-utils/Config.in"
++endmenu
+ menu "Firmware"
+ 	source "package/am33x-cm3/Config.in"
+ 	source "package/b43-firmware/Config.in"
