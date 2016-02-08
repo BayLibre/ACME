@@ -31,6 +31,14 @@ start() {
 		echo out > /sys/class/gpio/gpio$GPIO/direction
 		echo 1 > /sys/class/gpio/gpio$GPIO/value
 	done
+
+        for probe in {1..8}
+        do
+		echo "Setting RShunt for probe #"$probe
+		rshunt=`dut-dump-probe $probe -s`
+		echo $rshunt > /sys/bus/iio/devices/iio:device$probe/in_shunt_resistor
+        done
+
 }
 
 case "$1" in
