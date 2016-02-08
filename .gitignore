@@ -9,3 +9,4 @@ kbuild
 libsigrok
 linux
 pulseview
+manufacturing/utils
