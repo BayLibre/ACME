@@ -5,12 +5,12 @@
 # Power Monitoring and Switching device
 #
 #
-ifndef ACME_HOME
+ifndef TOPLEVEL
  $(error you need to source acme-setup, or define the matching variables)
 endif
 
-export UBOOT_BUILD=$(ACME_HOME)/build/u-boot
-export KERNEL_BUILD=$(ACME_HOME)/build/linux
+export UBOOT_BUILD=$(TOPLEVEL)/build/u-boot
+export KERNEL_BUILD=$(TOPLEVEL)/build/linux
 
 .PHONY: sdcard
 
@@ -37,7 +37,7 @@ endif
 	@date > patches/.applied
 	echo "rootfs: you may want to add some id_rsa.pub keys to rootfs/root/.ssh/authorized_keys" > .log
         # Kernel patches
-	cd $(KERNEL_SRC) && git am --reject -3 $(ACME_HOME)/patches/linux/*.patch
+	cd $(KERNEL_SRC) && git am --reject -3 $(TOPLEVEL)/patches/linux/*.patch
 
 ##
 # Kernel stuff
@@ -72,23 +72,23 @@ endif
 ##
 # BUILDROOT and ROOTFS
 ##
-$(ACME_HOME)/buildroot/.config:	patches/.applied
+$(TOPLEVEL)/buildroot/.config:	patches/.applied
 	@echo "preparing buildroot"
-	make -C $(ACME_HOME)/buildroot baylibre-acme_defconfig
+	make -C $(TOPLEVEL)/buildroot baylibre-acme_defconfig
 ifdef ACME_IIO
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO_IIOD
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO_IIOD
 	echo "buildroot: added IIO packages" > .log
 else
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LM_SENSORS
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LM_SENSORS
 	echo "buildroot: added sensors/hwmon packages" > .log
 endif
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable TARGET_ROOTFS_TAR
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBDAEMON
-	cd $(ACME_HOME)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_EXPAT
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable TARGET_ROOTFS_TAR
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBDAEMON
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_EXPAT
 
 
 # create rootfs.tar.xz
@@ -97,16 +97,16 @@ endif
 rootfs: rootfs.tar.xz fix-nfs
 
 rootfs.tar.xz: $(INSTALL_MOD_PATH)/.rootfs
-	xz -kc $(ACME_HOME)/buildroot/output/images/rootfs.tar > rootfs.tar.xz
+	xz -kc $(TOPLEVEL)/buildroot/output/images/rootfs.tar > rootfs.tar.xz
 
-$(INSTALL_MOD_PATH)/.rootfs: $(ACME_HOME)/buildroot/output/images/rootfs.tar
+$(INSTALL_MOD_PATH)/.rootfs: $(TOPLEVEL)/buildroot/output/images/rootfs.tar
 	@mkdir -p $(INSTALL_MOD_PATH)
-	fakeroot tar xv -C $(INSTALL_MOD_PATH) -f $(ACME_HOME)/buildroot/output/images/rootfs.tar
+	fakeroot tar xv -C $(INSTALL_MOD_PATH) -f $(TOPLEVEL)/buildroot/output/images/rootfs.tar
 	fakeroot chown ${USER}:${USER} rootfs
 	@date > $(INSTALL_MOD_PATH)/.rootfs
 
-$(ACME_HOME)/buildroot/output/images/rootfs.tar: $(ACME_HOME)/buildroot/.config
-	make -C $(ACME_HOME)/buildroot -j 5
+$(TOPLEVEL)/buildroot/output/images/rootfs.tar: $(TOPLEVEL)/buildroot/.config
+	make -C $(TOPLEVEL)/buildroot -j 5
 
 fix-nfs: $(INSTALL_MOD_PATH)/.rootfs
 	cat sdcard/uenv/uEnv-nfs.tmpl | sed 's#INSTALL_MOD_PATH#'"${INSTALL_MOD_PATH}"'#' >  sdcard/uenv/uEnv-nfs.txt
@@ -150,7 +150,7 @@ distclean: clean
 clean:
 	-@rm -rf $(KERNEL_BUILD)
 	-@rm -rf $(UBOOT_BUILD)
-	-@fakeroot rm $(ACME_HOME)/buildroot/output/images/rootfs.tar
+	-@fakeroot rm $(TOPLEVEL)/buildroot/output/images/rootfs.tar
 	-@rm $(INSTALL_MOD_PATH)/.rootfs
 
 

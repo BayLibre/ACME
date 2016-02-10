@@ -12,9 +12,7 @@ export CROSS_COMPILE=arm-linux-gnueabi-
 export COMMON=~/COMMON
 export TOPLEVEL=`pwd`
 
-export ACME_HOME=$TOPLEVEL
-
-export ACME_PATCHES=$ACME_HOME/patches
+export ACME_PATCHES=$TOPLEVEL/patches
 
 # Try using a common local git clone for linux
 # As for CI will will usually checkout the tag-to-test
@@ -24,15 +22,16 @@ then
 	echo "WARNING: will use the COMMON source for linux"
         export KERNEL_SRC=$COMMON/linux
 else
-        export KERNEL_SRC=$ACME_HOME/linux
+	export KERNEL_SRC=$TOPLEVEL/linux
 fi
+
 
 if [ -d "$COMMON/u-boot" ]
 then
 	echo "WARNING: will use the COMMON source for u-boot"
         export UBOOT_SRC=$COMMON/u-boot
 else
-        export UBOOT_SRC=$ACME_HOME/u-boot
+        export UBOOT_SRC=$TOPLEVEL/u-boot
 fi
 
 
@@ -40,16 +39,16 @@ export TFTP_DIR=/var/lib/tftpboot
 
 export ARCH=arm
 
-# Uncomment to experiment with IIO
-#
-export ACME_IIO=1
-
 #
 # Note on using NFS: this will work nicely if the
 # buildroot output/image dir is exported and used as scratch
 # nfs rootfs.
 #
-export INSTALL_MOD_PATH=$ACME_HOME/rootfs
+export INSTALL_MOD_PATH=$TOPLEVEL/rootfs
+
+# Uncomment to experiment with IIO
+#
+export ACME_IIO=1
 
 if [ -f ~/.vimrc_ACME ]
 then
