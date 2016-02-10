@@ -9,13 +9,32 @@ export BOARDIP=192.168.1.69
 
 export CROSS_COMPILE=arm-linux-gnueabi-
 
+export COMMON=~/COMMON
 export TOPLEVEL=`pwd`
 
 export ACME_HOME=$TOPLEVEL
 
 export ACME_PATCHES=$ACME_HOME/patches
-export KERNEL_SRC=$ACME_HOME/linux
-export UBOOT_SRC=$ACME_HOME/u-boot
+
+# Try using a common local git clone for linux
+# As for CI will will usually checkout the tag-to-test
+#
+if [ -d "$COMMON/linux" ]
+then
+	echo "WARNING: will use the COMMON source for linux"
+        export KERNEL_SRC=$COMMON/linux
+else
+        export KERNEL_SRC=$ACME_HOME/linux
+fi
+
+if [ -d "$COMMON/u-boot" ]
+then
+	echo "WARNING: will use the COMMON source for u-boot"
+        export UBOOT_SRC=$COMMON/u-boot
+else
+        export UBOOT_SRC=$ACME_HOME/u-boot
+fi
+
 
 export TFTP_DIR=/var/lib/tftpboot
 
