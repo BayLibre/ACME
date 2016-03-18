@@ -34,9 +34,9 @@ start() {
 
         for probe in 0 1 2 3 4 5 6 7
         do
-		if [ -x /sys/bus/iio/devices/iio:device$probe/in_shunt_resistor ]
+		if [ -f /sys/bus/iio/devices/iio:device$probe/in_shunt_resistor ]
 		then
-			rshunt=`dut-dump-probe -s $probe`
+			rshunt=`dut-dump-probe -r $probe`
 			echo $rshunt > /sys/bus/iio/devices/iio:device$probe/in_shunt_resistor
 		fi
         done
