@@ -1,12 +1,10 @@
-# Baylibre ACME Build Crater #
+# Baylibre ACME Build Environment #
 
 ## Instructions ##
 
 ### Getting the repo ###
 
-If not already done, please install repo and pull the manifests as per
-
-<https://github.com/BayLibre/manifests/blob/master/README.md#acme-build-crater>
+If not already done, please install repo and pull the manifests as per the [ACME manifest](https://github.com/BayLibre/manifests#acme-build-environment-iio-version)
 
 ### Getting started ###
 
