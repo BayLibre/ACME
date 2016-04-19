@@ -17,6 +17,10 @@ If not already done, please install repo and pull the manifests as per
 * source acme-setup
 
 * make
+* potentially fix the ACME's hostname and add your RSA keys in rootfs/root/.ssh.authorized_keys
+* make rootfs
+* ACME_SDCARD=/dev/sdc make sdcard (use lsblk to figure which is your block device)
+
 
 ## Build Targets ##
 
