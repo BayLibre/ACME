@@ -25,6 +25,10 @@ all: reset
 	# mount and mkdirs
 	mkdir -p ${TEMPDIR}
 	sudo mount ${ACME_SDCARD}1 ${TEMPDIR}
+
+# FIXME: use this with mmcblk
+#	sudo mount ${ACME_SDCARD}p1 ${TEMPDIR}
+
 	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
 	sudo mkdir -p ${TEMPDIR}/boot/dtbs
 	# create backup bootloader
@@ -45,6 +49,9 @@ all: reset
 reset:
 	./check-acme-disk
 	-sudo umount ${ACME_SDCARD}1
+# FIXME: use this with mmcblk
+#	-sudo umount ${ACME_SDCARD}p1
+
 	sudo dd if=/dev/zero of=${ACME_SDCARD} bs=1M count=10
 
 help:
