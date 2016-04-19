@@ -21,13 +21,14 @@ all: reset
 	sudo dd if=${UBOOT_BUILD}/u-boot.img of=${ACME_SDCARD} count=2 seek=1 bs=384k
 	# make partitions and format
 	sudo fdisk ${ACME_SDCARD} < ./fdisk-cmds
+	@mkdir -p ${TEMPDIR}
+ifeq (mmcblk,$(findstring mmcblk,$(ACME_SDCARD)))
+	sudo mkfs.ext4 ${ACME_SDCARD}p1 -L rootfs
+	sudo mount ${ACME_SDCARD}p1 ${TEMPDIR}
+else
 	sudo mkfs.ext4 ${ACME_SDCARD}1 -L rootfs
-	# mount and mkdirs
-	mkdir -p ${TEMPDIR}
 	sudo mount ${ACME_SDCARD}1 ${TEMPDIR}
-
-# FIXME: use this with mmcblk
-#	sudo mount ${ACME_SDCARD}p1 ${TEMPDIR}
+endif
 
 	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
 	sudo mkdir -p ${TEMPDIR}/boot/dtbs
@@ -44,13 +45,12 @@ all: reset
 	sudo cp -v  ./uenv/uEnv-nfs.txt ${TEMPDIR}
 	sync
 	sync
-	sudo eject ${ACME_SDCARD}
+	-sudo eject ${ACME_SDCARD}
 
 reset:
 	./check-acme-disk
-	-sudo umount ${ACME_SDCARD}1
-# FIXME: use this with mmcblk
-#	-sudo umount ${ACME_SDCARD}p1
+	-@sudo umount ${ACME_SDCARD}1
+	-@sudo umount ${ACME_SDCARD}p1
 
 	sudo dd if=/dev/zero of=${ACME_SDCARD} bs=1M count=10
 
