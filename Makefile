@@ -145,7 +145,8 @@ distclean: clean
 	make -C $(KERNEL_SRC) mrproper
 	make -C buildroot clean
 	make -C u-boot mrproper
-	fakeroot rm -rf rootfs rootfs.tar.xz
+	-@fakeroot rm -rf rootfs rootfs.tar.xz
+	-@repo forall -vc "git reset --hard"
 	echo "" > .log
 
 clean:
@@ -170,6 +171,7 @@ help:
 	@echo
 	@echo "clean			clean the kernel and uboot"
 	@echo "distclean		flush all the build, including buildroot"
+	@echo "         		(also fushes local changes in uboo/kernel source)"
 	@echo
 	@echo " == Building the SDCard == "
 	@echo
