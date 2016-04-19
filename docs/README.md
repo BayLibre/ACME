@@ -6,7 +6,7 @@
 
 If not already done, please install repo and pull the manifests as per
 
-<https://github.com/BayLibre/manifests/blob/master/README.md>
+<https://github.com/BayLibre/manifests/blob/master/README.md#acme-build-crater>
 
 ### Getting started ###
 
