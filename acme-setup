@@ -35,7 +35,7 @@ else
 fi
 
 
-export TFTP_DIR=/var/lib/tftpboot
+export TFTP_DIR=$TOPLEVEL/build/tftpboot
 
 export ARCH=arm
 
