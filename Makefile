@@ -66,6 +66,7 @@ ifdef ACME_IIO
 	cd $(KERNEL_BUILD) && kconfig-tweak --disable SENSORS_INA2XX
 	cd $(KERNEL_BUILD) && kconfig-tweak --module IIO
 	cd $(KERNEL_BUILD) && kconfig-tweak --module INA2XX_ADC
+	make -C $(KERNEL_BUILD) olddefconfig
 	echo "kernel: configured for INA2XX_ADC (IIO)" >> .log
 endif
 
