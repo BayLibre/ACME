@@ -90,6 +90,7 @@ endif
 	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
 	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBDAEMON
 	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_EXPAT
+	make -C $(TOPLEVEL)/buildroot olddefconfig
 
 
 # create rootfs.tar.xz
