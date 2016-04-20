@@ -20,15 +20,17 @@ all: reset
 	sudo dd if=${UBOOT_BUILD}/MLO of=${ACME_SDCARD} count=1 seek=1 bs=128k
 	sudo dd if=${UBOOT_BUILD}/u-boot.img of=${ACME_SDCARD} count=2 seek=1 bs=384k
 	# make partitions and format
-	sudo fdisk ${ACME_SDCARD} < ./fdisk-cmds
+	#sudo fdisk ${ACME_SDCARD} < ./fdisk-cmds
+	sudo parted -s ${ACME_SDCARD} mklabel msdos
+	sudo parted -s ${ACME_SDCARD} unit cyl mkpart primary ext2 -- 0 100%
 	@mkdir -p ${TEMPDIR}
-ifeq (mmcblk,$(findstring mmcblk,$(ACME_SDCARD)))
-	sudo mkfs.ext4 ${ACME_SDCARD}p1 -L rootfs
+#ifeq (mmcblk,$(findstring mmcblk,$(ACME_SDCARD)))
+	sudo mkfs.ext4 -F ${ACME_SDCARD}p1 -L rootfs
 	sudo mount ${ACME_SDCARD}p1 ${TEMPDIR}
-else
-	sudo mkfs.ext4 ${ACME_SDCARD}1 -L rootfs
-	sudo mount ${ACME_SDCARD}1 ${TEMPDIR}
-endif
+#else
+#	sudo mkfs.ext4 ${ACME_SDCARD}1 -L rootfs
+#	sudo mount ${ACME_SDCARD}1 ${TEMPDIR}
+#endif
 
 	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
 	sudo mkdir -p ${TEMPDIR}/boot/dtbs
@@ -45,7 +47,8 @@ endif
 	sudo cp -v  ./uenv/uEnv-nfs.txt ${TEMPDIR}
 	sync
 	sync
-	-sudo eject ${ACME_SDCARD}
+	#-sudo eject ${ACME_SDCARD}
+	sudo umount ${TEMPDIR}
 
 reset:
 	./check-acme-disk

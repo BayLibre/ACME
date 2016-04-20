@@ -11,6 +11,7 @@ export CROSS_COMPILE=arm-linux-gnueabi-
 
 export COMMON=~/COMMON
 export TOPLEVEL=`pwd`
+export PATH=$PATH:$TOPLEVEL/bin
 
 export ACME_PATCHES=$TOPLEVEL/patches
 
