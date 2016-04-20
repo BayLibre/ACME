@@ -17,7 +17,8 @@ export IMAGEFILE=$(TOPLEVEL)/sdcard/acme-$(TAG).img
 
 .PHONY: sdcard
 
-all: sdcard
+all: $(IMAGEFILE)
+	echo "Generated $(IMAGEFILE)." > .log
 	-@cat .log
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
@@ -66,9 +67,9 @@ $(KERNEL_BUILD)/.config: patches/.applied
 	@mkdir -p $(KERNEL_BUILD)
 	make -C $(KERNEL_SRC) O=$(KERNEL_BUILD) acme_defconfig
 ifdef ACME_IIO
-	cd $(KERNEL_BUILD) && kconfig-tweak --disable SENSORS_INA2XX
-	cd $(KERNEL_BUILD) && kconfig-tweak --module IIO
-	cd $(KERNEL_BUILD) && kconfig-tweak --module INA2XX_ADC
+	cd $(KERNEL_BUILD) && $(TOPLEVEL)/scripts/kconfig-tweak --disable SENSORS_INA2XX
+	cd $(KERNEL_BUILD) && $(TOPLEVEL)/scripts/kconfig-tweak --module IIO
+	cd $(KERNEL_BUILD) && $(TOPLEVEL)/scripts/kconfig-tweak --module INA2XX_ADC
 	make -C $(KERNEL_BUILD) olddefconfig
 	echo "kernel: configured for INA2XX_ADC (IIO)" >> .log
 endif
@@ -80,19 +81,19 @@ $(TOPLEVEL)/buildroot/.config:	patches/.applied
 	@echo "preparing buildroot"
 	make -C $(TOPLEVEL)/buildroot baylibre-acme_defconfig
 ifdef ACME_IIO
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBIIO_IIOD
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_LIBIIO
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_LIBIIO_IIOD
 	echo "buildroot: added IIO packages" > .log
 else
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LM_SENSORS
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_LM_SENSORS
 	echo "buildroot: added sensors/hwmon packages" > .log
 endif
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable TARGET_ROOTFS_TAR
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_TRACE_CMD
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_LIBDAEMON
-	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" kconfig-tweak --enable PACKAGE_EXPAT
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable TARGET_ROOTFS_TAR
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_TRACE_CMD
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_AVAHI
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_AVAHI_DAEMON
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_LIBDAEMON
+	cd $(TOPLEVEL)/buildroot && CONFIG_="BR2_" $(TOPLEVEL)/scripts/kconfig-tweak --enable PACKAGE_EXPAT
 	make -C $(TOPLEVEL)/buildroot olddefconfig
 
 
@@ -121,6 +122,7 @@ fix-nfs: $(INSTALL_MOD_PATH)/.rootfs
 ##
 # SDCARD and BOOTLOADER contents
 ##
+$(IMAGEFILE): sdcard
 
 sdcard: kernel u-boot rootfs
 	@make -C sdcard all
