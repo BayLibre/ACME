@@ -17,8 +17,9 @@ If not already done, please install repo and pull the manifests as per the [ACME
 * make
 * potentially fix the ACME's hostname and add your RSA keys in rootfs/root/.ssh.authorized_keys
 * make rootfs
-* ACME_SDCARD=/dev/sdc make sdcard (use lsblk to figure which is your block device)
+* make sdcard
 
+* finally use 'dd' to write the raw sdcard image in sdcard to your block device.
 
 ## Build Targets ##
 
@@ -28,39 +29,6 @@ If not already done, please install repo and pull the manifests as per the [ACME
 * distclean	distclean, including buildroot
 * rootfs	untar buildroot image, build buildroot if necessary
 * sdcard	create contents for a standalone device booting from sdcard.
-
-## SD Card creation ##
-
-Folder 'sdcard' holds the sdcard creation scripts.
-In order for "make sdcard" to work, the user _must_
-define the variable ACME_SDCARD based on the detected
-device for the sdcard to format.
-
-Please PAY SERIOUS ATTENTION TO NOT DESTROYING VALUABLE DEVICE CONTENT.
-
-Especially when removing/re-inserting, always make sure
-that the device exported in ACME_SDCARD is the card intended
-to being used. Use dmesg or lsblk to check/findout.
-
-> example:
-
-
-```
-		marc@marc-ThinkPad-L540:~$ lsblk
-		NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT
-		sda      8:0    0 465,8G  0 disk 
-		├─sda1   8:1    0   1,5G  0 part 
-		...
-		├─sda5   8:5    0 376,5G  0 part /
-		└─sda6   8:6    0   7,7G  0 part [SWAP]
-		...
-		sdd      8:48   1   7,4G  0 disk 
-		├─sdd1   8:49   1    52M  0 part /media/marc/boot
-		└─sdd2   8:50   1   968M  0 part /media/marc/rootfs
-		sr0     11:0    1  1024M  0 rom 
-
-		marc@marc-ThinkPad-L540:~$ ACME_SDCARD=/dev/sdd make sdcard
-```
 
 ### IIO Support ###
 

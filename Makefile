@@ -9,12 +9,15 @@ ifndef TOPLEVEL
  $(error you need to source acme-setup, or define the matching variables)
 endif
 
+TAG=$(shell git rev-parse --short=8 HEAD)
+
 export UBOOT_BUILD=$(TOPLEVEL)/build/u-boot
 export KERNEL_BUILD=$(TOPLEVEL)/build/linux
+export IMAGEFILE=$(TOPLEVEL)/sdcard/acme-$(TAG).img
 
 .PHONY: sdcard
 
-all: kernel u-boot rootfs
+all: sdcard
 	-@cat .log
 
 patches/.applied: patches/baylibre-acme_defconfig patches/baylibre-acme
@@ -119,7 +122,7 @@ fix-nfs: $(INSTALL_MOD_PATH)/.rootfs
 # SDCARD and BOOTLOADER contents
 ##
 
-sdcard: $(UBOOT_BUILD)/MLO $(INSTALL_MOD_PATH)/.rootfs $(KERNEL_BUILD)/arch/arm/boot/zImage
+sdcard: kernel u-boot rootfs
 	@make -C sdcard all
 	-@cat .log
 
@@ -176,6 +179,5 @@ help:
 	@echo
 	@echo " == Building the SDCard == "
 	@echo
-	@echo "sdcard			create the sdcard contents, please use with care."
+	@echo "sdcard			create the sdcard image"
 	@echo
-	make -C sdcard help

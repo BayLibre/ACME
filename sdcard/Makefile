@@ -5,38 +5,26 @@
 # Power Monitoring and Switching device
 #
 #
-ifndef ACME_SDCARD
- $(error you need to CAREFULLY define ACME_SDCARD, lsblk is helpful to do so.)
-endif
-ifndef UBOOT_BUILD
- $(error UBOOT_BUILD undefined)
-endif
+UBOOT_BUILD?=../build/u-boot
+KERNEL_BUILD?=../build/linux
+IMAGEFILE?=acme.img
 
-TEMPDIR=/tmp/acme-tmp-rootfs
+TEMPDIR=$(shell mktemp)
 
 .PHONY: reset help
 
 all: reset
-	sudo dd if=${UBOOT_BUILD}/MLO of=${ACME_SDCARD} count=1 seek=1 bs=128k
-	sudo dd if=${UBOOT_BUILD}/u-boot.img of=${ACME_SDCARD} count=2 seek=1 bs=384k
-	# make partitions and format
-	#sudo fdisk ${ACME_SDCARD} < ./fdisk-cmds
-	sudo parted -s ${ACME_SDCARD} mklabel msdos
-	sudo parted -s ${ACME_SDCARD} unit cyl mkpart primary ext2 -- 0 100%
-	@mkdir -p ${TEMPDIR}
-#ifeq (mmcblk,$(findstring mmcblk,$(ACME_SDCARD)))
-	sudo mkfs.ext4 -F ${ACME_SDCARD}p1 -L rootfs
-	sudo mount ${ACME_SDCARD}p1 ${TEMPDIR}
-#else
-#	sudo mkfs.ext4 ${ACME_SDCARD}1 -L rootfs
-#	sudo mount ${ACME_SDCARD}1 ${TEMPDIR}
-#endif
-
+	dd if=/dev/zero of=${IMAGEFILE} bs=1M count=2048
+	dd if=../build/u-boot/MLO of=${IMAGEFILE} count=1 seek=1 bs=128k conv=nocreat,notrunc
+	dd if=../build/u-boot/u-boot.img of=${IMAGEFILE} count=2 seek=1 bs=384k conv=nocreat,notrunc
+	parted -s ${IMAGEFILE} mklabel msdos
+	parted -s ${IMAGEFILE} unit cyl mkpart primary ext2 -- 16 100%
+	# make filesystem
+	sudo losetup -v /dev/loop1 ${IMAGEFILE} -o 1048576
+	sudo mkfs.ext2 /dev/loop1
+	sudo mount  -o loop /dev/loop1 ${TEMPDIR}
 	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
 	sudo mkdir -p ${TEMPDIR}/boot/dtbs
-	# create backup bootloader
-	sudo cp -v ${UBOOT_BUILD}/MLO ${TEMPDIR}/opt/backup/uboot/
-	sudo cp -v ${UBOOT_BUILD}/u-boot.img ${TEMPDIR}/opt/backup/uboot/
 	#rootfs, modules, kernel and dtb
 	sudo cp -r ${INSTALL_MOD_PATH}/* ${TEMPDIR}/
 	sudo cp $(KERNEL_BUILD)/arch/arm/boot/zImage ${TEMPDIR}/boot
@@ -44,21 +32,14 @@ all: reset
 	# uEnv
 	sudo cp -v  ./uenv/uEnv-sd.txt ${TEMPDIR}/boot/uEnv.txt
 	sudo cp -v  ./uenv/uEnv-sd.txt ${TEMPDIR}/uEnv.txt
-	sudo cp -v  ./uenv/uEnv-nfs.txt ${TEMPDIR}
 	sync
-	sync
-	#-sudo eject ${ACME_SDCARD}
 	sudo umount ${TEMPDIR}
-
-reset:
-	./check-acme-disk
-	-@sudo umount ${ACME_SDCARD}1
-	-@sudo umount ${ACME_SDCARD}p1
-
-	sudo dd if=/dev/zero of=${ACME_SDCARD} bs=1M count=10
+	echo "you may now dd the image to your sdcard with e.g:"
+	echo "sudo dd if=acme.img of=/dev/sdc bs=1M count=2048"
 
 help:
-	lsblk | grep disk -A 2
-	@echo "export ACME_SDCARD according to dmesg, ex: /dev/sde"
 
-
+reset:
+	rm -f *.img
+	-@sudo umount ${TEMPDIR}
+	-@sudo losetup -D -v
