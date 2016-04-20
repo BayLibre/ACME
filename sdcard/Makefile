@@ -9,7 +9,7 @@ UBOOT_BUILD?=../build/u-boot
 KERNEL_BUILD?=../build/linux
 IMAGEFILE?=acme.img
 
-TEMPDIR=$(shell mktemp)
+TEMPDIR := $(shell mktemp -d)
 
 .PHONY: reset help
 
@@ -22,7 +22,6 @@ all: reset
 	# make filesystem
 	sudo losetup -v /dev/loop1 ${IMAGEFILE} -o 1048576
 	sudo mkfs.ext2 /dev/loop1
-	mkdir -p ${TEMPDIR}
 	sudo mount  -o loop /dev/loop1 ${TEMPDIR}
 	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
 	sudo mkdir -p ${TEMPDIR}/boot/dtbs
@@ -42,5 +41,4 @@ help:
 
 reset:
 	rm -f *.img
-	-@sudo umount ${TEMPDIR}
 	-@sudo losetup -D -v
