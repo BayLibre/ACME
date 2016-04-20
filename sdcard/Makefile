@@ -22,6 +22,7 @@ all: reset
 	# make filesystem
 	sudo losetup -v /dev/loop1 ${IMAGEFILE} -o 1048576
 	sudo mkfs.ext2 /dev/loop1
+	mkdir -p ${TEMPDIR}
 	sudo mount  -o loop /dev/loop1 ${TEMPDIR}
 	sudo mkdir -p ${TEMPDIR}/opt/backup/uboot/
 	sudo mkdir -p ${TEMPDIR}/boot/dtbs
